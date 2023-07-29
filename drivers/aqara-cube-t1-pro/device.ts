@@ -18,7 +18,8 @@ class CubeT1Pro extends ZigBeeDevice {
     
     var {zclNode} = args;
     // Send the "toggle" command to cluster "onOff" on endpoint 1
-    await zclNode.endpoints[1].clusters
+    this.log("onNodeInit args", args);
+    //await zclNode.endpoints[1].clusters
 
     // // Read the "onOff" attribute from the "onOff" cluster
     // const currentOnOffValue = await zclNode.endpoints[1].clusters.onOff.readAttributes(
@@ -31,7 +32,6 @@ class CubeT1Pro extends ZigBeeDevice {
    */
   async onInit() {
     this.log('MyDevice has been initialized');
-
   }
 
   /**
