@@ -1,0 +1,47 @@
+{
+    "type": "enum",
+    "uiComponent": "sensor",
+    "title": {
+      "en": "Side up"
+    },
+    "getable": true,
+    "setable": false,
+    "values": [
+      {
+        "id": "1",
+        "title": {
+          "en": "Side 1"
+        }
+      },
+      {
+        "id": "2",
+        "title": {
+          "en": "Side 2"
+        }
+      },
+      {
+        "id": "3",
+        "title": {
+          "en": "Side 3"
+        }
+      },
+      {
+        "id": "4",
+        "title": {
+          "en": "Side 4"
+        }
+      },
+      {
+        "id": "5",
+        "title": {
+          "en": "Side 5"
+        }
+      },
+      {
+        "id": "6",
+        "title": {
+          "en": "Side 6"
+        }
+      }
+    ]
+  }

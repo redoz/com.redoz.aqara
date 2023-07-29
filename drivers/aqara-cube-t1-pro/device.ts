@@ -1,38 +1,68 @@
 
 
-import { ZigBeeNode } from 'homey';
-import { ZigBeeDevice }  from 'homey-zigbeedriver';
-import { ZCLNode }  from 'zigbee-clusters';
+const { ZigBeeDevice } = require("homey-zigbeedriver");
+
+// const { MultistateInputCluster } = require("zigbee-clusters");
+import { CLUSTER, ZCLNode } from "zigbee-clusters";
+
+
+import { AqaraOppleCluster } from './AqaraOppleCluster';
 
 const { debug } = require("zigbee-clusters");
 
 debug(true);
 
-interface NodeInitArgs {
-  zclNode: ZCLNode
-  node: ZigBeeNode
-}
+
 class CubeT1Pro extends ZigBeeDevice {
 
-  async onNodeInit(args: NodeInitArgs): Promise<void> {
-    
-    var {zclNode} = args;
-    // Send the "toggle" command to cluster "onOff" on endpoint 1
-    this.log("onNodeInit args", args);
-    //await zclNode.endpoints[1].clusters
 
-    // // Read the "onOff" attribute from the "onOff" cluster
-    // const currentOnOffValue = await zclNode.endpoints[1].clusters.onOff.readAttributes(
-    //   ["onOff"]
-    // );
+  async onNodeInit({ zclNode }: { zclNode: ZCLNode }) {
+    this.enableDebug();
+    this.debug(true);
+    this.log('On NOde init has been initialized');
+    var cluster = zclNode.endpoints[1].clusters[AqaraOppleCluster.NAME];
+    if (this.isFirstInit()) {
+      // without this the cube only uses the onOff cluster
+      await cluster!.writeAttributes({ operation_mode: 1 });
+    }
+
+
+
+    zclNode.endpoints[2]
+      .clusters.multistateInput!
+      .on('attr.presentValue', this.multiStateInputHandler.bind(this));
+
+    // zclNode.endpoints[3]
+    // .clusters.analogInput!
+    // .on('attr.presentValue', this.analogInputHandler.bind(this));
+
+    // zclNode.endpoints[2]
+    // .clusters.aqaraOpple!
+    // .on('attr.presentValue', this.analogInputHandler.bind(this));
+
+    // zclNode.endpoints[1]
+    //   .clusters[CLUSTER.ANALOG_INPUT.NAME]!
+    //   .on('attr.presentValue', this.analogInputHandler.bind(this));
+  }
+
+  multiStateInputHandler(data: any) {
+    this.log("multiStateInputHandler")
+  }
+
+  analogInputHandler(data: any) {
+    this.log("analogInputHandler")
   }
 
   /**
    * onInit is called when the device is initialized.
    */
-  async onInit() {
-    this.log('MyDevice has been initialized');
-  }
+  // async onInit() {
+  //   this.log('MyDevice has been initialized');
+
+  //   var node = await this.homey.zigbee.getNode(this);
+
+  //   this.log("node", node);
+  // }
 
   /**
    * onAdded is called when the user adds the device, called just after pairing.

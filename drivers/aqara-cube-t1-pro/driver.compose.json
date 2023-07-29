@@ -2,8 +2,11 @@
   "name": {
     "en": "Aqara Cube T1 Pro"
   },
-  "class": "button",
-  "capabilities": [],
+  "class": "sensor",
+  "capabilities": [
+    "measure_battery",
+    "cube_side_up"
+  ],
   "platforms": [
     "local"
   ],
@@ -15,13 +18,21 @@
     "productId": ["lumi.remote.cagl02"],
     "endpoints": {
       "1": {
-        "clusters": [0, 4, 5, 6],
-        "bindings": [6]
+        "clusters": [0, 4, 5, 6, 12, 64704],
+        "bindings": [6, 18, 64704]
+      },
+      "2": {
+        "clusters": [18, 64704],
+        "bindings": [18, 64704]
+      },
+      "3": {
+        "clusters": [12],
+        "bindings": [12]
       }
     },
     "learnmode": {
       "image": "/drivers/my_driver/assets/learnmode.svg",
-      "instruction": { "en": "Press the button on your device three times" }
+      "instruction": { "en": "Long press the button for 5 seconds to to pair. Then click the button at least every two seconds until the pairing process is complete." }
     }
   },  
   "images": {

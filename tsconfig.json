@@ -3,6 +3,8 @@
   "compilerOptions": {
     "allowJs": true,
     "checkJs": true,
+    "downlevelIteration": true,
+    "maxNodeModuleJsDepth": 10,
     "outDir": ".homeybuild/"
   }
 }

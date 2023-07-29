@@ -31,8 +31,11 @@
       "name": {
         "en": "Aqara Cube T1 Pro"
       },
-      "class": "button",
-      "capabilities": [],
+      "class": "sensor",
+      "capabilities": [
+        "measure_battery",
+        "cube_side_up"
+      ],
       "platforms": [
         "local"
       ],
@@ -50,17 +53,39 @@
               0,
               4,
               5,
-              6
+              6,
+              12,
+              64704
             ],
             "bindings": [
-              6
+              6,
+              18,
+              64704
+            ]
+          },
+          "2": {
+            "clusters": [
+              18,
+              64704
+            ],
+            "bindings": [
+              18,
+              64704
+            ]
+          },
+          "3": {
+            "clusters": [
+              12
+            ],
+            "bindings": [
+              12
             ]
           }
         },
         "learnmode": {
           "image": "/drivers/my_driver/assets/learnmode.svg",
           "instruction": {
-            "en": "Press the button on your device three times"
+            "en": "Long press the button for 5 seconds to to pair. Then click the button at least every two seconds until the pairing process is complete."
           }
         }
       },
@@ -76,5 +101,54 @@
       },
       "id": "aqara-cube-t1-pro"
     }
-  ]
+  ],
+  "capabilities": {
+    "cube_side_up": {
+      "type": "enum",
+      "uiComponent": "sensor",
+      "title": {
+        "en": "Side up"
+      },
+      "getable": true,
+      "setable": false,
+      "values": [
+        {
+          "id": "1",
+          "title": {
+            "en": "Side 1"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "Side 2"
+          }
+        },
+        {
+          "id": "3",
+          "title": {
+            "en": "Side 3"
+          }
+        },
+        {
+          "id": "4",
+          "title": {
+            "en": "Side 4"
+          }
+        },
+        {
+          "id": "5",
+          "title": {
+            "en": "Side 5"
+          }
+        },
+        {
+          "id": "6",
+          "title": {
+            "en": "Side 6"
+          }
+        }
+      ]
+    }
+  }
 }
