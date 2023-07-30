@@ -25,19 +25,55 @@ interface CubeRotateTriggerArgs {
 interface CubeRotateTriggerState {
   degrees: number
 }
+type Side = "one" | "two" | "three" | "four" | "five" | "six"
+function sideEquals(arg: Side, state: number) {
+  switch (arg) {
+    case "one":
+      return state === 1;
+    case "two":
+      return state === 2;
+    case "three":
+      return state === 3;
+    case "four":
+      return state === 4;
+    case "five":
+      return state === 5;
+    case "six":
+      return state === 6;
+  }
+}
 interface CubeTapTriggerArgs {
-  side?: "one" | "two" | "three" | "four" | "five" | "six"
+  side?: Side
 }
 interface CubeTapTriggerState {
   side: number
 }
+
+interface CubeFlipTriggerArgs {
+  fromSide?: Side
+  toSide?: Side
+}
+interface CubeFlipTriggerState {
+  fromSide: number
+  toSide: number
+}
+interface CubePushTriggerArgs {
+  side?: Side
+}
+interface CubePushTriggerState {
+  side: number
+}
+
 class CubeT1Pro extends ZigBeeDevice {
 
   private _cubeRotateTrigger?: FlowCardTriggerDevice;
   private _cubeShakeTrigger?: FlowCardTriggerDevice;
   private _cubeTapTrigger?: FlowCardTriggerDevice;
+  private _cubeFlipTrigger?: FlowCardTriggerDevice;
+  private _cubePushTrigger?: FlowCardTriggerDevice;
 
   private _mode?: Mode;
+
 
   async onNodeInit({ zclNode }: { zclNode: ZCLNode }) {
     this.enableDebug();
@@ -88,25 +124,29 @@ class CubeT1Pro extends ZigBeeDevice {
 
     this._cubeTapTrigger = this.homey.flow.getDeviceTriggerCard("cube_tap");
     this._cubeTapTrigger!.registerRunListener(async (args: CubeTapTriggerArgs, state: CubeTapTriggerState) => {
-      console.log("args.side", args.side)
-      console.log("state.side", state.side)
       if (args.side === undefined)
         return true;
 
-      switch (args.side) {
-        case "one":
-          return state.side === 1;
-        case "two":
-          return state.side === 2;
-        case "three":
-          return state.side === 3;
-        case "four":
-          return state.side === 4;
-        case "five":
-          return state.side === 5;
-        case "six":
-          return state.side === 6;
-      }
+      return sideEquals(args.side, state.side);
+    });
+
+    this._cubeFlipTrigger = this.homey.flow.getDeviceTriggerCard("cube_flip");
+    this._cubeFlipTrigger!.registerRunListener(async (args: CubeFlipTriggerArgs, state: CubeFlipTriggerState) => {
+      if (args.fromSide !== undefined && !sideEquals(args.fromSide, state.fromSide))
+        return false;
+
+      if (args.toSide !== undefined && !sideEquals(args.toSide, state.toSide))
+        return false;
+
+      return true;
+    });
+
+    this._cubePushTrigger = this.homey.flow.getDeviceTriggerCard("cube_push");
+    this._cubePushTrigger!.registerRunListener(async (args: CubePushTriggerArgs, state: CubePushTriggerState) => {
+      if (args.side === undefined)
+        return true;
+
+      return sideEquals(args.side, state.side);
     });
 
     // triggers:
@@ -169,6 +209,24 @@ class CubeT1Pro extends ZigBeeDevice {
       .catch((arg: any) => this.error("error: ", arg))
   }
 
+  async triggerCubeFlip(fromSide: number, toSide: number) {
+    console.log("Trigger cube tap");
+
+    this._cubeFlipTrigger!
+      .trigger(this as unknown as Device, { fromSide, toSide }, { fromSide, toSide })
+      .then((arg: any) => this.log("triggered: ", arg))
+      .catch((arg: any) => this.error("error: ", arg))
+  }
+
+  async triggerCubePush(side: number) {
+    console.log("Trigger cube push");
+
+    this._cubePushTrigger!
+      .trigger(this as unknown as Device, { side }, { side })
+      .then((arg: any) => this.log("triggered: ", arg))
+      .catch((arg: any) => this.error("error: ", arg))
+  }
+
 
   async multiStateInputHandler(data: number) {
     var toSideBits = data & 0x07;
@@ -178,49 +236,51 @@ class CubeT1Pro extends ZigBeeDevice {
     var command;
     if (commandBits === 1) {
       // 90 degree flip
-      command = "flip90"
+      let fromSide = fromSideBits + 1;
+      let toSide = toSideBits + 1;
       this.log("multiStateInputHandler", {
         data,
-        command,
-        from: fromSideBits + 1,
-        to: toSideBits + 1,
+        command: "flip90",
+        fromSide,
+        toSide
       });
+      await this.triggerCubeFlip(fromSide, toSide);
     } else if (commandBits == 2) {
       // 180 degree flip
-      command = "flip180"
+      let toSide = toSideBits + 1;
+      let fromSide = 7 - toSide;
       this.log("multiStateInputHandler", {
         data,
-        command,
-        from: 7 - (toSideBits + 1),
-        to: toSideBits + 1,
+        command: "flip180",
+        fromSide,
+        toSide
       });
+      await this.triggerCubeFlip(fromSide, toSide);
     } else if (commandBits == 0 && fromSideBits === 0 && toSideBits === 0) {
       // shake
-      command = "shake"
       this.log("multiStateInputHandler", {
         data,
-        command
+        command: "shake"
       });
       await this.triggerCubeShake();
     } else if (commandBits === 8) {
       // double tap
-      command = "tap"
       let side = toSideBits + 1;
       this.log("multiStateInputHandler", {
         data,
-        command,
+        command: "tap",
         side
       });
-
       await this.triggerCubeTap(side)
     } else if (commandBits === 4) {
       // push
-      command = "push"
+      let side = toSideBits + 1;
       this.log("multiStateInputHandler", {
         data,
-        command,
-        side: toSideBits + 1
+        command: "push",
+        side
       });
+      await this.triggerCubePush(side)
     } else {
       command = "UNKNOWN"
       this.log("multiStateInputHandler", {
