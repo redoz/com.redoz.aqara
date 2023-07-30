@@ -582,7 +582,7 @@
       "max": 6,
       "step": 1,
       "decimals": 0,
-      "insights": true
+      "insights": false
     }
   }
 }
