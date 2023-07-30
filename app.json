@@ -477,33 +477,6 @@
           }
         ],
         "tokens": []
-      },
-      {
-        "id": "cube_inactive",
-        "title": {
-          "en": "Cube inactive"
-        },
-        "titleFormatted": {
-          "en": "[[device]] inactive."
-        },
-        "hint": {
-          "en": "Raised after a few minutes of inactivity."
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=aqara-cube-t1-pro"
-          },
-          {
-            "name": "device",
-            "type": "device",
-            "title": {
-              "en": "Cube"
-            }
-          }
-        ],
-        "tokens": []
       }
     ]
   },
@@ -608,7 +581,8 @@
       "min": 1,
       "max": 6,
       "step": 1,
-      "decimals": 0
+      "decimals": 0,
+      "insights": true
     }
   }
 }
