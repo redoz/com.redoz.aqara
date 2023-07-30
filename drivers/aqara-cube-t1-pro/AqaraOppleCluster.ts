@@ -11,6 +11,11 @@ const ATTRIBUTES = {
         id: 0x0148,
         type: ZCLDataTypes.uint8,
         manufacturerId: 0x115f,
+    },
+    side: {
+        id: 0x0149,
+        type: ZCLDataTypes.uint8,
+        manufacturerId: 0x115f,
     }
 };
 

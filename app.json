@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.redoz.aqara",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
@@ -11,7 +11,7 @@
     "en": "Aqara"
   },
   "description": {
-    "en": "Adds support for Aqara devices"
+    "en": "Adds support for Aqara Cube T1 Pro"
   },
   "category": [
     "lights"
@@ -26,6 +26,11 @@
     "name": "Patrik Husfloen",
     "email": "redoz@redoz.com"
   },
+  "brandColor": "#ef7a1a",
+  "bugs": {
+    "url": "https://github.com/redoz/com.redoz.aqara/issues"
+  },
+  "source": "https://github.com/redoz/com.redoz.aqara",
   "flow": {
     "triggers": [
       {
@@ -341,7 +346,7 @@
             "name": "fromSide",
             "type": "number",
             "title": {
-              "en": "Side"
+              "en": "From Side"
             },
             "example": {
               "en": "1"
@@ -351,7 +356,7 @@
             "name": "toSide",
             "type": "number",
             "title": {
-              "en": "Side"
+              "en": "To Side"
             },
             "example": {
               "en": "4"
@@ -445,6 +450,60 @@
             }
           }
         ]
+      },
+      {
+        "id": "cube_pick_up",
+        "title": {
+          "en": "Pick up and hold cube"
+        },
+        "titleFormatted": {
+          "en": "Pick up [[device]] and hold."
+        },
+        "hint": {
+          "en": "Pick up and hold cube still."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=aqara-cube-t1-pro"
+          },
+          {
+            "name": "device",
+            "type": "device",
+            "title": {
+              "en": "Cube"
+            }
+          }
+        ],
+        "tokens": []
+      },
+      {
+        "id": "cube_inactive",
+        "title": {
+          "en": "Cube inactive"
+        },
+        "titleFormatted": {
+          "en": "[[device]] inactive."
+        },
+        "hint": {
+          "en": "Raised after a few minutes of inactivity."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=aqara-cube-t1-pro"
+          },
+          {
+            "name": "device",
+            "type": "device",
+            "title": {
+              "en": "Cube"
+            }
+          }
+        ],
+        "tokens": []
       }
     ]
   },

@@ -1,6 +1,6 @@
 {
   "id": "com.redoz.aqara",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": [
@@ -10,7 +10,7 @@
     "en": "Aqara"
   },
   "description": {
-    "en": "Adds support for Aqara devices"
+    "en": "Adds support for Aqara Cube T1 Pro"
   },
   "category": [
     "lights"
@@ -24,5 +24,10 @@
   "author": {
     "name": "Patrik Husfloen",
     "email": "redoz@redoz.com"
-  }
+  },
+  "brandColor": "#ef7a1a",
+  "bugs": {
+    "url": "https://github.com/redoz/com.redoz.aqara/issues"
+  },
+  "source": "https://github.com/redoz/com.redoz.aqara"
 }

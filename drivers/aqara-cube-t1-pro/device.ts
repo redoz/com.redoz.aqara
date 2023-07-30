@@ -71,6 +71,7 @@ class CubeT1Pro extends ZigBeeDevice {
   private _cubeTapTrigger?: FlowCardTriggerDevice;
   private _cubeFlipTrigger?: FlowCardTriggerDevice;
   private _cubePushTrigger?: FlowCardTriggerDevice;
+  private _cubePickUpTrigger?: FlowCardTriggerDevice;
 
   private _mode?: Mode;
 
@@ -79,31 +80,6 @@ class CubeT1Pro extends ZigBeeDevice {
     this.enableDebug();
     this.debug(true);
     this.log('Initializing node...');
-    if (this.isFirstInit()) {
-      // without this the cube only uses the onOff cluster
-      this.log("Configuring Cube to operate in Event mode...");
-      var cluster = zclNode.endpoints[1].clusters[AqaraOppleCluster.NAME]!;
-      await cluster.writeAttributes({ operation_mode: 1 });
-      this.log("Reading mode attribute...");
-      var result = await cluster.readAttributes(['mode']);
-      this._mode = result.mode as number;
-      await this.setSettings({
-        mode: Mode[this._mode]
-      });
-      this.log("Cube successfully configured");
-      // TODO can we fail the pairing operation if fails?
-    } else {
-      // should probably figure out how to work with Enums in typescript
-      this._mode = this.getSettings().mode === "Action" ? Mode.Action : Mode.Scene;
-    }
-
-    // maintain the `mode` setting when it's changed on the device
-    zclNode.endpoints[1].clusters.aqaraOpple?.on('attr.mode', async (mode: number) => {
-      this._mode = mode;
-      await this.setSettings({
-        mode: Mode[this._mode]
-      });
-    })
 
     this._cubeRotateTrigger = this.homey.flow.getDeviceTriggerCard("cube_rotate");
     this._cubeRotateTrigger!.registerRunListener(async (args: CubeRotateTriggerArgs, state: CubeRotateTriggerState) => {
@@ -149,6 +125,9 @@ class CubeT1Pro extends ZigBeeDevice {
       return sideEquals(args.side, state.side);
     });
 
+    this._cubePickUpTrigger = this.homey.flow.getDeviceTriggerCard("cube_pick_up");
+    this._cubePickUpTrigger!.registerRunListener(async (_args, _state) => true);
+
     // triggers:
     // Mode change
     // Scene Mode
@@ -169,6 +148,38 @@ class CubeT1Pro extends ZigBeeDevice {
     //   Inactivity
 
 
+    if (this.isFirstInit()) {
+      // without this the cube only uses the onOff cluster
+      this.log("Configuring Cube to operate in Event mode...");
+      var cluster = zclNode.endpoints[1].clusters[AqaraOppleCluster.NAME]!;
+      await cluster.writeAttributes({ operation_mode: 1 });
+      this.log("Reading mode attribute...");
+      var result = await cluster.readAttributes(['mode']);
+      this._mode = result.mode as number;
+      await this.setSettings({
+        mode: Mode[this._mode]
+      });
+      this.log("Cube successfully configured");
+      // TODO can we fail the pairing operation if fails?
+    } else {
+      // should probably figure out how to work with Enums in typescript
+      this._mode = this.getSettings().mode === "Action" ? Mode.Action : Mode.Scene;
+    }
+
+    // maintain the `mode` setting when it's changed on the device
+    zclNode.endpoints[1].clusters.aqaraOpple?.on('attr.mode', async (mode: number) => {
+      this._mode = mode;
+      await this.setMode(mode);
+    })
+
+    // scene mode "side up"
+    zclNode.endpoints[2].clusters.aqaraOpple?.on('attr.side', async (side: number) => {
+      side += 1; // sides are 0 indexed from the device
+      this.log("side up", side);
+      await this.triggerCubeFlip(undefined, side);
+    })
+
+
     zclNode.endpoints[2]
       .clusters.multistateInput!
       .on('attr.presentValue', this.multiStateInputHandler.bind(this));
@@ -183,7 +194,7 @@ class CubeT1Pro extends ZigBeeDevice {
   }
 
   async triggerCubeRotate(degrees: number) {
-    console.log("Trigger cube rotate", { degrees });
+    this.log("Trigger cube rotate", { degrees });
 
     this._cubeRotateTrigger!
       .trigger(this as unknown as Device, { degrees }, { degrees })
@@ -192,7 +203,7 @@ class CubeT1Pro extends ZigBeeDevice {
   }
 
   async triggerCubeShake() {
-    console.log("Trigger cube shake");
+    this.log("Trigger cube shake");
 
     this._cubeShakeTrigger!
       .trigger(this as unknown as Device, {}, {})
@@ -201,7 +212,7 @@ class CubeT1Pro extends ZigBeeDevice {
   }
 
   async triggerCubeTap(side: number) {
-    console.log("Trigger cube tap");
+    this.log("Trigger cube tap");
 
     this._cubeTapTrigger!
       .trigger(this as unknown as Device, { side }, { side })
@@ -211,9 +222,14 @@ class CubeT1Pro extends ZigBeeDevice {
       this.setCapabilityValue('cube_side_up', side).catch(this.error);
   }
 
-  async triggerCubeFlip(fromSide: number, toSide: number) {
-    console.log("Trigger cube tap");
+  async triggerCubeFlip(fromSide: number | undefined, toSide: number) {
+    if (fromSide === undefined) {
+      fromSide = this.getCapabilityValue('cube_side_up');
+    }
+    if (fromSide === toSide)
+      return;
 
+    this.log("Trigger cube flip");
     this._cubeFlipTrigger!
       .trigger(this as unknown as Device, { fromSide, toSide }, { fromSide, toSide })
       .then((arg: any) => this.log("triggered: ", arg))
@@ -223,7 +239,7 @@ class CubeT1Pro extends ZigBeeDevice {
   }
 
   async triggerCubePush(side: number) {
-    console.log("Trigger cube push");
+    this.log("Trigger cube push");
 
     this._cubePushTrigger!
       .trigger(this as unknown as Device, { side }, { side })
@@ -233,73 +249,100 @@ class CubeT1Pro extends ZigBeeDevice {
     this.setCapabilityValue('cube_side_up', side).catch(this.error);
   }
 
+  async triggerCubePickUp() {
+    this.log("Trigger cube pick-up");
+
+    this._cubePickUpTrigger!
+      .trigger(this as unknown as Device, {}, {})
+      .then((arg: any) => this.log("triggered: ", arg))
+      .catch((arg: any) => this.error("error: ", arg))
+  }
+
+  async setMode(mode: Mode) {
+    await this.setSettings({
+      mode: Mode[mode]
+    });
+  }
 
   async multiStateInputHandler(data: number) {
     var toSideBits = data & 0x07;
     var fromSideBits = (data >> 3) & 0x07;
-    var commandBits = (data >> 6);
+    var eventBits = (data >> 6);
 
-    var command;
-    if (commandBits === 1) {
+    if (data === 4) {
+      // this can only happen in scene mode
+      await this.setMode(Mode.Scene);
+
+      // pick up
+      this.log("multiStateInputHandler", {
+        data,
+        event: "pickUp"
+      });
+      await this.triggerCubePickUp();
+    } else if (eventBits === 16) {
+      let toSide = toSideBits + 1;
+      this.log("multiStateInputHandler", {
+        data,
+        event: "sideUp"
+      });
+      await this.triggerCubeFlip(undefined, toSide);
+    } else if (eventBits === 1) {
       // 90 degree flip
       let fromSide = fromSideBits + 1;
       let toSide = toSideBits + 1;
       this.log("multiStateInputHandler", {
         data,
-        command: "flip90",
+        event: "flip90",
         fromSide,
         toSide
       });
       await this.triggerCubeFlip(fromSide, toSide);
-    } else if (commandBits == 2) {
+    } else if (eventBits == 2) {
       // 180 degree flip
       let toSide = toSideBits + 1;
       let fromSide = 7 - toSide;
       this.log("multiStateInputHandler", {
         data,
-        command: "flip180",
+        event: "flip180",
         fromSide,
         toSide
       });
       await this.triggerCubeFlip(fromSide, toSide);
-    } else if (commandBits == 0 && fromSideBits === 0 && toSideBits === 0) {
+    } else if (eventBits == 0 && fromSideBits === 0 && toSideBits === 0) {
       // shake
       this.log("multiStateInputHandler", {
         data,
-        command: "shake"
+        event: "shake"
       });
       await this.triggerCubeShake();
-    } else if (commandBits === 8) {
+    } else if (eventBits === 8) {
       // double tap
       let side = toSideBits + 1;
       this.log("multiStateInputHandler", {
         data,
-        command: "tap",
+        event: "tap",
         side
       });
       await this.triggerCubeTap(side)
-    } else if (commandBits === 4) {
+    } else if (eventBits === 4) {
       // push
       let side = toSideBits + 1;
       this.log("multiStateInputHandler", {
         data,
-        command: "push",
+        event: "push",
         side
       });
       await this.triggerCubePush(side)
     } else {
-      command = "UNKNOWN"
       this.log("multiStateInputHandler", {
         data,
-        commandBits,
+        eventBits,
         fromSideBits,
         toSideBits,
-        command
+        event: "UNKNOWN"
       });
     }
   }
-
-
 
   aqaraOppleInputHandler(data: any) {
     this.log("aqaraOppleInputHandler")

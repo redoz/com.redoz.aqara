@@ -260,13 +260,13 @@
                 {
                   "name": "fromSide",
                   "type": "number",
-                  "title": { "en": "Side" },
+                  "title": { "en": "From Side" },
                   "example": {"en": "1" }
                 },
                 {
                     "name": "toSide",
                     "type": "number",
-                    "title": { "en": "Side" },
+                    "title": { "en": "To Side" },
                     "example": {"en": "4" }
                   }
             ]
@@ -342,6 +342,26 @@
                   "example": {"en": "1" }
                 }
             ]
+        },
+        {
+            "id": "cube_pick_up",
+            "title": {
+                "en": "Pick up and hold cube"
+            },
+            "titleFormatted": {
+                "en": "Pick up [[device]] and hold."
+            },
+            "hint": {
+                "en": "Pick up and hold cube still."
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "title": { "en": "Cube"}
+                }
+            ],
+            "tokens": []
         }
     ]
 }
