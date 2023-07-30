@@ -280,7 +280,7 @@
                 "en": "Push [[device]] with side [[side]] facing up."
             },
             "hint": {
-                "en": "Push cube on a surface."
+                "en": "Push cube on a surface. Only works in Action mode."
             },
             "args": [
                 {
@@ -293,7 +293,7 @@
                     "type": "dropdown",
                     "required": false,
                     "placeholder": { "en": "Side"},
-                    "title": { "en": "Side facing up"},
+                    "title": { "en": "Side"},
                     "values": [
                         {
                             "id": "one",

@@ -207,6 +207,8 @@ class CubeT1Pro extends ZigBeeDevice {
       .trigger(this as unknown as Device, { side }, { side })
       .then((arg: any) => this.log("triggered: ", arg))
       .catch((arg: any) => this.error("error: ", arg))
+
+      this.setCapabilityValue('cube_side_up', side).catch(this.error);
   }
 
   async triggerCubeFlip(fromSide: number, toSide: number) {
@@ -216,6 +218,8 @@ class CubeT1Pro extends ZigBeeDevice {
       .trigger(this as unknown as Device, { fromSide, toSide }, { fromSide, toSide })
       .then((arg: any) => this.log("triggered: ", arg))
       .catch((arg: any) => this.error("error: ", arg))
+
+    this.setCapabilityValue('cube_side_up', toSide).catch(this.error);
   }
 
   async triggerCubePush(side: number) {
@@ -225,6 +229,8 @@ class CubeT1Pro extends ZigBeeDevice {
       .trigger(this as unknown as Device, { side }, { side })
       .then((arg: any) => this.log("triggered: ", arg))
       .catch((arg: any) => this.error("error: ", arg))
+
+    this.setCapabilityValue('cube_side_up', side).catch(this.error);
   }
 
 
