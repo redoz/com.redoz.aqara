@@ -1,0 +1,9 @@
+[
+    {
+        "id": "mode",
+        "type": "label",
+        "label": { "en": "Mode" },
+        "value": "",
+        "hint": { "en": "The device can operate in Scene or Action mode. Click the link button 5 times to toggle between the two." }
+      }
+]

@@ -1,12 +1,12 @@
 {
     "triggers": [
         {
-            "id": "cube_rotated",
+            "id": "cube_rotate",
             "title": {
-                "en": "Cube rotated"
+                "en": "Rotate cube"
             },
             "titleFormatted": {
-                "en": "[[device]] rotated at least [[degrees]] degrees in [[direction]] direction."
+                "en": "Rotate [[device]] at least [[degrees]] degrees in [[direction]] direction."
             },
             "hint": {
                 "en": "Cube rotated on a surface."
@@ -56,6 +56,97 @@
                   "example": {"en": "90" }
                 }
             ]
-        }        
+        },
+        {
+            "id": "cube_shake",
+            "title": {
+                "en": "Shake cube"
+            },
+            "titleFormatted": {
+                "en": "Shake [[device]]."
+            },
+            "hint": {
+                "en": "Pick up cube and shake it twice."
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "title": { "en": "Cube"}
+                }
+            ]
+        },
+        {
+            "id": "cube_tap",
+            "title": {
+                "en": "Tap cube"
+            },
+            "titleFormatted": {
+                "en": "Tap [[device]] with side [[side]] facing up."
+            },
+            "hint": {
+                "en": "Pick up cube and tap it twice on a surface."
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "title": { "en": "Cube"}
+                },        
+                {
+                    "name": "side",
+                    "type": "dropdown",
+                    "required": false,
+                    "placeholder": { "en": "Side"},
+                    "title": { "en": "Side facing up"},
+                    "values": [
+                        {
+                            "id": "one",
+                            "label": {
+                                "en": "1"
+                            }
+                        },
+                        {
+                            "id": "two",
+                            "label": {
+                                "en": "2"
+                            }
+                        },
+                        {
+                            "id": "three",
+                            "label": {
+                                "en": "3"
+                            }
+                        },
+                        {
+                            "id": "four",
+                            "label": {
+                                "en": "4"
+                            }
+                        },
+                        {
+                            "id": "five",
+                            "label": {
+                                "en": "5"
+                            }
+                        },
+                        {
+                            "id": "six",
+                            "label": {
+                                "en": "6"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "tokens": [
+                {
+                  "name": "side",
+                  "type": "number",
+                  "title": { "en": "Side facing up" },
+                  "example": {"en": "1" }
+                }
+            ]
+        }
     ]
 }
