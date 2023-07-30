@@ -2,11 +2,11 @@
 
 const { ZigBeeDevice } = require("homey-zigbeedriver");
 
-// const { MultistateInputCluster } = require("zigbee-clusters");
 import { CLUSTER, ZCLNode } from "zigbee-clusters";
 
-
 import { AqaraOppleCluster } from './AqaraOppleCluster';
+
+import { Device, FlowCardTriggerDevice } from 'homey'
 
 const { debug } = require("zigbee-clusters");
 
@@ -15,17 +15,45 @@ debug(true);
 
 class CubeT1Pro extends ZigBeeDevice {
 
+  private _cubeRotated? : FlowCardTriggerDevice;
 
   async onNodeInit({ zclNode }: { zclNode: ZCLNode }) {
     this.enableDebug();
     this.debug(true);
-    this.log('On NOde init has been initialized');
-    var cluster = zclNode.endpoints[1].clusters[AqaraOppleCluster.NAME];
+    this.log('Initializing node...');
     if (this.isFirstInit()) {
       // without this the cube only uses the onOff cluster
-      await cluster!.writeAttributes({ operation_mode: 1 });
+      this.log("Configuring Cube to operate in Event mode...");
+      await zclNode.endpoints[1].clusters[AqaraOppleCluster.NAME]!.writeAttributes({ operation_mode: 1 });
+      this.log("Cube successfully configured");
+      // TODO can we fail the pairing operation if fails?
     }
 
+    this._cubeRotated = this.homey.flow.getDeviceTriggerCard("cube_rotated");
+
+    this._cubeRotated!.registerRunListener(async (args, state) => {
+      return true;
+    });
+
+    // triggers:
+    // Mode change
+    // Scene Mode
+    //   Rotate    
+    //   Shake
+    //   Pick up
+    //   Hold
+    //   Side up
+    //   Inactivity
+
+    // Action Mode
+    //   Push
+    //   Rotate
+    //   Pick up and tap twice
+    //   Flip 90 degrees
+    //   Flip 180 degrees
+    //   Shake
+    //   Inactivity
+    
 
 
     zclNode.endpoints[2]
@@ -33,24 +61,71 @@ class CubeT1Pro extends ZigBeeDevice {
       .on('attr.presentValue', this.multiStateInputHandler.bind(this));
 
     // zclNode.endpoints[3]
-    // .clusters.analogInput!
-    // .on('attr.presentValue', this.analogInputHandler.bind(this));
+    //   .clusters.analogInput!.configureReporting({
+    //     'presentValue': {
+    //       // rely on device defaults: https://athombv.github.io/node-homey-zigbeedriver/global.html#AttributeReportingConfiguration
+    //       minInterval: 0xFFFF,
+    //       maxInterval: 0,
+    //     }
+    //   });
 
-    // zclNode.endpoints[2]
-    // .clusters.aqaraOpple!
-    // .on('attr.presentValue', this.analogInputHandler.bind(this));
+    // zclNode.endpoints[3]
+    //   .clusters.analogInput!
+    //   .on('attr.presentValue', this.analogInputHandler.bind(this));
+
+
+    zclNode.endpoints[3]
+      .clusters.analogInput!
+      .on('attr.presentValue', this.triggerCubeRotated);
+
+    zclNode.endpoints[2]
+      .clusters.aqaraOpple!
+      .on('attr.presentValue', this.aqaraOppleInputHandler.bind(this));
 
     // zclNode.endpoints[1]
     //   .clusters[CLUSTER.ANALOG_INPUT.NAME]!
     //   .on('attr.presentValue', this.analogInputHandler.bind(this));
+
+
+  }
+
+  triggerCubeRotated = async (degrees: number) => {
+    var arrayOfCardArgumnets : {
+      degrees: number, 
+      direction: "either"|"clockwise"|"counterclockwise" 
+    }[] = await this._cubeRotated!.getArgumentValues(this as unknown as Device);
+
+    for (let instance = 0; instance < arrayOfCardArgumnets.length; instance++) {
+      const cardArgs = arrayOfCardArgumnets[instance];
+      
+      this.log("args", cardArgs);
+      // only if the degrees requirement is met
+      console.log("degrees", degrees);
+
+      if (Math.abs(degrees) < cardArgs.degrees)
+        return;
+
+      if (cardArgs.direction === "clockwise" && degrees < 0)
+        return
+
+      if (cardArgs.direction === "counterclockwise" && degrees > 0)
+        return
+
+      this._cubeRotated!
+        .trigger(this as unknown as Device, {"degrees": degrees}, {})
+        .then((arg:any) => this.log("triggered: ", arg))
+        .catch((arg:any) => this.error("error: ", arg))
+    }
   }
 
   multiStateInputHandler(data: any) {
     this.log("multiStateInputHandler")
   }
 
-  analogInputHandler(data: any) {
-    this.log("analogInputHandler")
+
+
+  aqaraOppleInputHandler(data: any) {
+    this.log("aqaraOppleInputHandler")
   }
 
   /**

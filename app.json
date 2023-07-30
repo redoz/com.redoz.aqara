@@ -26,6 +26,82 @@
     "name": "Patrik Husfloen",
     "email": "redoz@redoz.com"
   },
+  "flow": {
+    "triggers": [
+      {
+        "id": "cube_rotated",
+        "title": {
+          "en": "Cube rotated"
+        },
+        "titleFormatted": {
+          "en": "[[device]] rotated at least [[degrees]] degrees in [[direction]] direction."
+        },
+        "hint": {
+          "en": "Cube rotated on a surface."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=aqara-cube-t1-pro"
+          },
+          {
+            "name": "device",
+            "type": "device",
+            "title": {
+              "en": "Cube"
+            }
+          },
+          {
+            "name": "degrees",
+            "type": "number",
+            "title": {
+              "en": "Degrees"
+            }
+          },
+          {
+            "name": "direction",
+            "type": "dropdown",
+            "title": {
+              "en": "Direction"
+            },
+            "values": [
+              {
+                "id": "either",
+                "label": {
+                  "en": "Either"
+                }
+              },
+              {
+                "id": "clockwise",
+                "label": {
+                  "en": "Clockwise"
+                }
+              },
+              {
+                "id": "counterclockwise",
+                "label": {
+                  "en": "Counterclockwise"
+                }
+              }
+            ]
+          }
+        ],
+        "tokens": [
+          {
+            "name": "degrees",
+            "type": "number",
+            "title": {
+              "en": "Degrees"
+            },
+            "example": {
+              "en": "90"
+            }
+          }
+        ]
+      }
+    ]
+  },
   "drivers": [
     {
       "name": {
@@ -59,7 +135,7 @@
             ],
             "bindings": [
               6,
-              18,
+              12,
               64704
             ]
           },
