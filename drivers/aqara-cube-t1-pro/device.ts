@@ -219,7 +219,7 @@ class CubeT1Pro extends ZigBeeDevice {
       .then((arg: any) => this.log("triggered: ", arg))
       .catch((arg: any) => this.error("error: ", arg))
 
-      this.setCapabilityValue('cube_side_up', side).catch(this.error);
+    this.setCapabilityValue('cube_side_up', side).catch(this.error);
   }
 
   async triggerCubeFlip(fromSide: number | undefined, toSide: number) {
