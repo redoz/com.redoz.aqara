@@ -6,7 +6,7 @@
                 "en": "Rotate cube"
             },
             "titleFormatted": {
-                "en": "Rotate [[device]] at least [[degrees]] degrees in [[direction]] direction."
+                "en": "Rotate [[device]] at least [[degrees]] degrees in [[direction]] direction on [[side]]."
             },
             "hint": {
                 "en": "Cube rotated on a surface."
@@ -15,17 +15,23 @@
                 {
                     "name": "device",
                     "type": "device",
-                    "title": { "en": "Cube"}
-                },        
+                    "title": {
+                        "en": "Cube"
+                    }
+                },
                 {
                     "name": "degrees",
                     "type": "number",
-                    "title": { "en": "Degrees"}
+                    "title": {
+                        "en": "Degrees"
+                    }
                 },
                 {
                     "name": "direction",
                     "type": "dropdown",
-                    "title": { "en": "Direction"},
+                    "title": {
+                        "en": "Direction"
+                    },
                     "values": [
                         {
                             "id": "either",
@@ -46,14 +52,77 @@
                             }
                         }
                     ]
+                },
+                {
+                    "name": "side",
+                    "type": "dropdown",
+                    "required": false,
+                    "placeholder": {
+                        "en": "Side"
+                    },
+                    "title": {
+                        "en": "Side"
+                    },
+                    "values": [
+                        {
+                            "id": "one",
+                            "label": {
+                                "en": "1"
+                            }
+                        },
+                        {
+                            "id": "two",
+                            "label": {
+                                "en": "2"
+                            }
+                        },
+                        {
+                            "id": "three",
+                            "label": {
+                                "en": "3"
+                            }
+                        },
+                        {
+                            "id": "four",
+                            "label": {
+                                "en": "4"
+                            }
+                        },
+                        {
+                            "id": "five",
+                            "label": {
+                                "en": "5"
+                            }
+                        },
+                        {
+                            "id": "six",
+                            "label": {
+                                "en": "6"
+                            }
+                        }
+                    ]
                 }
             ],
             "tokens": [
                 {
-                  "name": "degrees",
-                  "type": "number",
-                  "title": { "en": "Degrees" },
-                  "example": {"en": "90" }
+                    "name": "degrees",
+                    "type": "number",
+                    "title": {
+                        "en": "Degrees"
+                    },
+                    "example": {
+                        "en": "90"
+                    }
+                },
+                {
+                    "name": "side",
+                    "type": "number",
+                    "title": {
+                        "en": "Side facing up"
+                    },
+                    "example": {
+                        "en": "1"
+                    }
                 }
             ]
         },
@@ -72,7 +141,9 @@
                 {
                     "name": "device",
                     "type": "device",
-                    "title": { "en": "Cube"}
+                    "title": {
+                        "en": "Cube"
+                    }
                 }
             ]
         },
@@ -91,14 +162,20 @@
                 {
                     "name": "device",
                     "type": "device",
-                    "title": { "en": "Cube"}
-                },        
+                    "title": {
+                        "en": "Cube"
+                    }
+                },
                 {
                     "name": "side",
                     "type": "dropdown",
                     "required": false,
-                    "placeholder": { "en": "Side"},
-                    "title": { "en": "Side"},
+                    "placeholder": {
+                        "en": "Side"
+                    },
+                    "title": {
+                        "en": "Side"
+                    },
                     "values": [
                         {
                             "id": "one",
@@ -141,10 +218,14 @@
             ],
             "tokens": [
                 {
-                  "name": "side",
-                  "type": "number",
-                  "title": { "en": "Side" },
-                  "example": {"en": "1" }
+                    "name": "side",
+                    "type": "number",
+                    "title": {
+                        "en": "Side"
+                    },
+                    "example": {
+                        "en": "1"
+                    }
                 }
             ]
         },
@@ -163,14 +244,20 @@
                 {
                     "name": "device",
                     "type": "device",
-                    "title": { "en": "Cube"}
-                },        
+                    "title": {
+                        "en": "Cube"
+                    }
+                },
                 {
                     "name": "fromSide",
                     "type": "dropdown",
                     "required": false,
-                    "placeholder": { "en": "Side"},
-                    "title": { "en": "Side"},
+                    "placeholder": {
+                        "en": "Side"
+                    },
+                    "title": {
+                        "en": "Side"
+                    },
                     "values": [
                         {
                             "id": "one",
@@ -214,86 +301,12 @@
                     "name": "toSide",
                     "type": "dropdown",
                     "required": false,
-                    "placeholder": { "en": "Side"},
-                    "title": { "en": "Side"},
-                    "values": [
-                        {
-                            "id": "one",
-                            "label": {
-                                "en": "1"
-                            }
-                        },
-                        {
-                            "id": "two",
-                            "label": {
-                                "en": "2"
-                            }
-                        },
-                        {
-                            "id": "three",
-                            "label": {
-                                "en": "3"
-                            }
-                        },
-                        {
-                            "id": "four",
-                            "label": {
-                                "en": "4"
-                            }
-                        },
-                        {
-                            "id": "five",
-                            "label": {
-                                "en": "5"
-                            }
-                        },
-                        {
-                            "id": "six",
-                            "label": {
-                                "en": "6"
-                            }
-                        }
-                    ]
-                }                
-            ],
-            "tokens": [
-                {
-                  "name": "fromSide",
-                  "type": "number",
-                  "title": { "en": "From Side" },
-                  "example": {"en": "1" }
-                },
-                {
-                    "name": "toSide",
-                    "type": "number",
-                    "title": { "en": "To Side" },
-                    "example": {"en": "4" }
-                  }
-            ]
-        },
-        {
-            "id": "cube_push",
-            "title": {
-                "en": "Push cube"
-            },
-            "titleFormatted": {
-                "en": "Push [[device]] with side [[side]] facing up."
-            },
-            "hint": {
-                "en": "Push cube on a surface. Only works in Action mode."
-            },
-            "args": [
-                {
-                    "name": "device",
-                    "type": "device",
-                    "title": { "en": "Cube"}
-                },        
-                {
-                    "name": "side",
-                    "type": "dropdown",
-                    "required": false,
-                    "placeholder": { "en": "Side"},
-                    "title": { "en": "Side"},
+                    "placeholder": {
+                        "en": "Side"
+                    },
+                    "title": {
+                        "en": "Side"
+                    },
                     "values": [
                         {
                             "id": "one",
@@ -336,10 +349,106 @@
             ],
             "tokens": [
                 {
-                  "name": "side",
-                  "type": "number",
-                  "title": { "en": "Side facing up" },
-                  "example": {"en": "1" }
+                    "name": "fromSide",
+                    "type": "number",
+                    "title": {
+                        "en": "From Side"
+                    },
+                    "example": {
+                        "en": "1"
+                    }
+                },
+                {
+                    "name": "toSide",
+                    "type": "number",
+                    "title": {
+                        "en": "To Side"
+                    },
+                    "example": {
+                        "en": "4"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "cube_push",
+            "title": {
+                "en": "Push cube"
+            },
+            "titleFormatted": {
+                "en": "Push [[device]] with side [[side]] facing up."
+            },
+            "hint": {
+                "en": "Push cube on a surface. Only works in Action mode."
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "title": {
+                        "en": "Cube"
+                    }
+                },
+                {
+                    "name": "side",
+                    "type": "dropdown",
+                    "required": false,
+                    "placeholder": {
+                        "en": "Side"
+                    },
+                    "title": {
+                        "en": "Side"
+                    },
+                    "values": [
+                        {
+                            "id": "one",
+                            "label": {
+                                "en": "1"
+                            }
+                        },
+                        {
+                            "id": "two",
+                            "label": {
+                                "en": "2"
+                            }
+                        },
+                        {
+                            "id": "three",
+                            "label": {
+                                "en": "3"
+                            }
+                        },
+                        {
+                            "id": "four",
+                            "label": {
+                                "en": "4"
+                            }
+                        },
+                        {
+                            "id": "five",
+                            "label": {
+                                "en": "5"
+                            }
+                        },
+                        {
+                            "id": "six",
+                            "label": {
+                                "en": "6"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "tokens": [
+                {
+                    "name": "side",
+                    "type": "number",
+                    "title": {
+                        "en": "Side facing up"
+                    },
+                    "example": {
+                        "en": "1"
+                    }
                 }
             ]
         },
@@ -358,7 +467,31 @@
                 {
                     "name": "device",
                     "type": "device",
-                    "title": { "en": "Cube"}
+                    "title": {
+                        "en": "Cube"
+                    }
+                }
+            ],
+            "tokens": []
+        },
+        {
+            "id": "cube_throw",
+            "title": {
+                "en": "Throw cube"
+            },
+            "titleFormatted": {
+                "en": "Throw [[device]]."
+            },
+            "hint": {
+                "en": "Hold cube an make throwing motion."
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "title": {
+                        "en": "Cube"
+                    }
                 }
             ],
             "tokens": []

@@ -39,7 +39,7 @@
           "en": "Rotate cube"
         },
         "titleFormatted": {
-          "en": "Rotate [[device]] at least [[degrees]] degrees in [[direction]] direction."
+          "en": "Rotate [[device]] at least [[degrees]] degrees in [[direction]] direction on [[side]]."
         },
         "hint": {
           "en": "Cube rotated on a surface."
@@ -90,6 +90,55 @@
                 }
               }
             ]
+          },
+          {
+            "name": "side",
+            "type": "dropdown",
+            "required": false,
+            "placeholder": {
+              "en": "Side"
+            },
+            "title": {
+              "en": "Side"
+            },
+            "values": [
+              {
+                "id": "one",
+                "label": {
+                  "en": "1"
+                }
+              },
+              {
+                "id": "two",
+                "label": {
+                  "en": "2"
+                }
+              },
+              {
+                "id": "three",
+                "label": {
+                  "en": "3"
+                }
+              },
+              {
+                "id": "four",
+                "label": {
+                  "en": "4"
+                }
+              },
+              {
+                "id": "five",
+                "label": {
+                  "en": "5"
+                }
+              },
+              {
+                "id": "six",
+                "label": {
+                  "en": "6"
+                }
+              }
+            ]
           }
         ],
         "tokens": [
@@ -101,6 +150,16 @@
             },
             "example": {
               "en": "90"
+            }
+          },
+          {
+            "name": "side",
+            "type": "number",
+            "title": {
+              "en": "Side facing up"
+            },
+            "example": {
+              "en": "1"
             }
           }
         ]
@@ -461,6 +520,33 @@
         },
         "hint": {
           "en": "Pick up and hold cube still."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=aqara-cube-t1-pro"
+          },
+          {
+            "name": "device",
+            "type": "device",
+            "title": {
+              "en": "Cube"
+            }
+          }
+        ],
+        "tokens": []
+      },
+      {
+        "id": "cube_throw",
+        "title": {
+          "en": "Throw cube"
+        },
+        "titleFormatted": {
+          "en": "Throw [[device]]."
+        },
+        "hint": {
+          "en": "Hold cube an make throwing motion."
         },
         "args": [
           {

@@ -4,7 +4,9 @@ const { ZigBeeDevice } = require("homey-zigbeedriver");
 
 import { CLUSTER, ZCLNode } from "zigbee-clusters";
 
-import { AqaraOppleCluster } from './AqaraOppleCluster';
+import { AqaraOppleCluster, AqaraOppleLifelineReport } from './AqaraOppleCluster';
+
+import { AqaraAnalogInputCluster } from './AqaraAnalogInputCluster';
 
 import { Device, FlowCardTriggerDevice } from 'homey'
 
@@ -20,12 +22,15 @@ enum Mode {
 interface CubeRotateTriggerArgs {
   degrees: number
   direction: 'either' | 'clockwise' | 'counterclockwise'
+  side?: Side
 }
 
 interface CubeRotateTriggerState {
   degrees: number
+  side: number
 }
 type Side = "one" | "two" | "three" | "four" | "five" | "six"
+
 function sideEquals(arg: Side, state: number) {
   switch (arg) {
     case "one":
@@ -72,6 +77,7 @@ class CubeT1Pro extends ZigBeeDevice {
   private _cubeFlipTrigger?: FlowCardTriggerDevice;
   private _cubePushTrigger?: FlowCardTriggerDevice;
   private _cubePickUpTrigger?: FlowCardTriggerDevice;
+  private _cubeThrowTrigger?: FlowCardTriggerDevice;
 
   private _mode?: Mode;
 
@@ -83,6 +89,9 @@ class CubeT1Pro extends ZigBeeDevice {
 
     this._cubeRotateTrigger = this.homey.flow.getDeviceTriggerCard("cube_rotate");
     this._cubeRotateTrigger!.registerRunListener(async (args: CubeRotateTriggerArgs, state: CubeRotateTriggerState) => {
+      if (args.side && !sideEquals(args.side, state.side))
+        return false;
+
       if (Math.abs(state.degrees) < args.degrees)
         return false;
 
@@ -127,6 +136,9 @@ class CubeT1Pro extends ZigBeeDevice {
 
     this._cubePickUpTrigger = this.homey.flow.getDeviceTriggerCard("cube_pick_up");
     this._cubePickUpTrigger!.registerRunListener(async (_args, _state) => true);
+
+    this._cubeThrowTrigger= this.homey.flow.getDeviceTriggerCard("cube_throw");
+    this._cubeThrowTrigger!.registerRunListener(async (_args, _state) => true);
 
     // triggers:
     // Mode change
@@ -180,24 +192,42 @@ class CubeT1Pro extends ZigBeeDevice {
     })
 
 
+    zclNode.endpoints[1]
+      .clusters.aqaraOpple!
+      .on('attr.lifeline', this.aparaOppleLifelineHandler.bind(this));
+      
     zclNode.endpoints[2]
       .clusters.multistateInput!
       .on('attr.presentValue', this.multiStateInputHandler.bind(this));
 
     zclNode.endpoints[3]
-      .clusters.analogInput!
+      .clusters[AqaraAnalogInputCluster.NAME]!
       .on('attr.presentValue', this.triggerCubeRotate.bind(this));
 
-    zclNode.endpoints[2]
-      .clusters.aqaraOpple!
-      .on('attr.presentValue', this.aqaraOppleInputHandler.bind(this));
+    zclNode.endpoints[3]
+      .clusters[AqaraAnalogInputCluster.NAME]!
+      .on('attr.side', async (side: number) => {
+        side += 1; // sides are 0 indexed from the device
+        this.log("side up", side);
+        await this.triggerCubeFlip(undefined, side);
+      });
+
+      zclNode.endpoints[3]
+      .clusters[AqaraAnalogInputCluster.NAME]!
+      .on('attr.unknown_0x010b', async (value: number) => {
+        
+        this.log("unknown_0x010b", value);
+      });
+
   }
 
   async triggerCubeRotate(degrees: number) {
     this.log("Trigger cube rotate", { degrees });
 
+    // we _should_ always have this
+    var side = this.getCapabilityValue('cube_side_up') ?? 0;
     this._cubeRotateTrigger!
-      .trigger(this as unknown as Device, { degrees }, { degrees })
+      .trigger(this as unknown as Device, { degrees, side }, { degrees, side })
       .then((arg: any) => this.log("triggered: ", arg))
       .catch((arg: any) => this.error("error: ", arg))
   }
@@ -258,6 +288,15 @@ class CubeT1Pro extends ZigBeeDevice {
       .catch((arg: any) => this.error("error: ", arg))
   }
 
+  async triggerCubeThrow() {
+    this.log("Trigger cube throw");
+
+    this._cubeThrowTrigger!
+      .trigger(this as unknown as Device, {}, {})
+      .then((arg: any) => this.log("triggered: ", arg))
+      .catch((arg: any) => this.error("error: ", arg))
+  }
+
   async setMode(mode: Mode) {
     await this.setSettings({
       mode: Mode[mode]
@@ -269,7 +308,24 @@ class CubeT1Pro extends ZigBeeDevice {
     var fromSideBits = (data >> 3) & 0x07;
     var eventBits = (data >> 6);
 
-    if (data === 4) {
+    if (data === 1) {
+      // throw
+
+      this.log("multiStateInputHandler", {
+        data,
+        event: "throw"
+      });
+      await this.triggerCubeThrow();
+    }
+    else if (data === 2) {
+      // activity after one minute of inactivity
+      this.log("multiStateInputHandler", {
+        data,
+        event: "activityAfterInactivity"
+      });
+    } else if (data === 4) {
+      // pick up
+
       // this can only happen in scene mode
       await this.setMode(Mode.Scene);
 
@@ -280,6 +336,11 @@ class CubeT1Pro extends ZigBeeDevice {
       });
       await this.triggerCubePickUp();
     } else if (eventBits === 16) {
+      // side up
+
+      // this can only happen in scene mode
+      await this.setMode(Mode.Scene);
+
       let toSide = toSideBits + 1;
       this.log("multiStateInputHandler", {
         data,
@@ -288,6 +349,10 @@ class CubeT1Pro extends ZigBeeDevice {
       await this.triggerCubeFlip(undefined, toSide);
     } else if (eventBits === 1) {
       // 90 degree flip
+
+      // this can only happen in action mode
+      await this.setMode(Mode.Action);
+
       let fromSide = fromSideBits + 1;
       let toSide = toSideBits + 1;
       this.log("multiStateInputHandler", {
@@ -299,6 +364,10 @@ class CubeT1Pro extends ZigBeeDevice {
       await this.triggerCubeFlip(fromSide, toSide);
     } else if (eventBits == 2) {
       // 180 degree flip
+
+      // this can only happen in action mode
+      await this.setMode(Mode.Action);
+
       let toSide = toSideBits + 1;
       let fromSide = 7 - toSide;
       this.log("multiStateInputHandler", {
@@ -317,6 +386,10 @@ class CubeT1Pro extends ZigBeeDevice {
       await this.triggerCubeShake();
     } else if (eventBits === 8) {
       // double tap
+
+      // this can only happen in action mode
+      await this.setMode(Mode.Action);
+
       let side = toSideBits + 1;
       this.log("multiStateInputHandler", {
         data,
@@ -344,8 +417,8 @@ class CubeT1Pro extends ZigBeeDevice {
     }
   }
 
-  aqaraOppleInputHandler(data: any) {
-    this.log("aqaraOppleInputHandler")
+  aparaOppleLifelineHandler(data: AqaraOppleLifelineReport) {
+    this.log("aparaOppleLifelineHandler", data)
   }
 
   /**
