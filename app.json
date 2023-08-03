@@ -563,6 +563,33 @@
           }
         ],
         "tokens": []
+      },
+      {
+        "id": "cube_motion_after_inactivity",
+        "title": {
+          "en": "Cube moved after a minute of inactivity"
+        },
+        "titleFormatted": {
+          "en": "[[device]] moved after a minute of inactivity."
+        },
+        "hint": {
+          "en": "Triggers when cube is moved after being inactive for more than one minute."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=aqara-cube-t1-pro"
+          },
+          {
+            "name": "device",
+            "type": "device",
+            "title": {
+              "en": "Cube"
+            }
+          }
+        ],
+        "tokens": []
       }
     ]
   },

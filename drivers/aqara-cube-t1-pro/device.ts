@@ -78,6 +78,7 @@ class CubeT1Pro extends ZigBeeDevice {
   private _cubePushTrigger?: FlowCardTriggerDevice;
   private _cubePickUpTrigger?: FlowCardTriggerDevice;
   private _cubeThrowTrigger?: FlowCardTriggerDevice;
+  private _cubeMotionAfterInactivityTrigger?: FlowCardTriggerDevice;
 
   private _mode?: Mode;
 
@@ -137,8 +138,11 @@ class CubeT1Pro extends ZigBeeDevice {
     this._cubePickUpTrigger = this.homey.flow.getDeviceTriggerCard("cube_pick_up");
     this._cubePickUpTrigger!.registerRunListener(async (_args, _state) => true);
 
-    this._cubeThrowTrigger= this.homey.flow.getDeviceTriggerCard("cube_throw");
+    this._cubeThrowTrigger = this.homey.flow.getDeviceTriggerCard("cube_throw");
     this._cubeThrowTrigger!.registerRunListener(async (_args, _state) => true);
+
+    this._cubeMotionAfterInactivityTrigger = this.homey.flow.getDeviceTriggerCard("cube_motion_after_inactivity");
+    this._cubeMotionAfterInactivityTrigger!.registerRunListener(async (_args, _state) => true);
 
     // triggers:
     // Mode change
@@ -212,7 +216,7 @@ class CubeT1Pro extends ZigBeeDevice {
         await this.triggerCubeFlip(undefined, side);
       });
 
-      zclNode.endpoints[3]
+    zclNode.endpoints[3]
       .clusters[AqaraAnalogInputCluster.NAME]!
       .on('attr.unknown_0x010b', async (value: number) => {
         
@@ -297,6 +301,15 @@ class CubeT1Pro extends ZigBeeDevice {
       .catch((arg: any) => this.error("error: ", arg))
   }
 
+  async triggerCubeMotionAfterInactivity() {
+    this.log("Trigger cube motion");
+
+    this._cubeMotionAfterInactivityTrigger!
+      .trigger(this as unknown as Device, {}, {})
+      .then((arg: any) => this.log("triggered: ", arg))
+      .catch((arg: any) => this.error("error: ", arg))
+  }
+
   async setMode(mode: Mode) {
     await this.setSettings({
       mode: Mode[mode]
@@ -323,6 +336,7 @@ class CubeT1Pro extends ZigBeeDevice {
         data,
         event: "activityAfterInactivity"
       });
+      await this.triggerCubeMotionAfterInactivity();
     } else if (data === 4) {
       // pick up
 

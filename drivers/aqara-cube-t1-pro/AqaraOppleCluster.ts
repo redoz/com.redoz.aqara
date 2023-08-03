@@ -1,23 +1,8 @@
 const { Cluster, ZCLDataTypes, ZCLDataType } = require("zigbee-clusters");
 
-import { DataType } from '@athombv/data-types';
-
-// id: number,
-// shortName: string,
-// length: number,
-// toBuf: ToBuffer,
-// fromBuf: FromBuffer,
-// ...args: unknown[]
-// interface AqaraOppleDeviceInfoAttribute {
-//     id: number,
-//     name?: string,
-//     value: any
-// }
-
 export enum AqaraOppleDeviceInfoAttribute {
-    BatteryVoltage = 1,
-    Rssi = 5,
-    OperationMode = 155
+    BatteryVoltage          = 0x01,
+    OperationMode           = 0x9B
 }
 
 export interface AqaraOppleLifelineReport {
@@ -32,44 +17,31 @@ const AqaraOppleLifelineAttributeType = new ZCLDataType(
     (buffer: Buffer, index: number, returnLength: boolean) => {
         const origIndex = index;
 
-        // id: 8 bits
-        // type: 8 bits
-        // value: 8*n bits
-
-        // while (index < buffer.length) {
-
         // Read the attribute id of this custom attribute-in-an-attribute (first byte)
         var id: number = ZCLDataTypes.uint8.fromBuffer(buffer, index);
         index += ZCLDataTypes.uint8.length;
-
         // Read the ZCL data type of this custom attribute-in-an-attribute (second byte)
         var dataTypeId: number = ZCLDataTypes.uint8.fromBuffer(buffer, index);
         index += ZCLDataTypes.uint8.length;
 
-        console.log("Lifeline attribute", {id, dataTypeId});
-
         var dataType: any = Object.values(ZCLDataTypes).find(type => (type as any).id === dataTypeId);
 
-        // console.log("data types: ", Object.values(ZCLDataTypes).map(x => (x as any).id));
         // Abort if no valid data type was found
         if (!dataType) throw new TypeError(`Invalid type (${dataTypeId}) for attribute: ${id}`);
 
         // eslint-disable-next-line no-mixed-operators
-        var name = AqaraOppleDeviceInfoAttribute[id] ?? id.toString(10);
-
+        let hex = '0' + id.toString(16);
+        hex = hex.substring(hex.length - 2);
+        var name = AqaraOppleDeviceInfoAttribute[id] ?? '0x' + hex;
 
         // Parse the value from the buffer using the DataType
         const entry = dataType.fromBuffer(buffer, index, true);
 
         let value;
         if (dataType.length > 0) {
-            index += DataType.length;
+            index += dataType.length;
             value = entry;
-            // result[attributeId] = entry;
-            // result[attributeName] = entry;
         } else {
-            // result[attributeId] = entry.result;
-            // result[attributeName] = entry.result;
             index += entry.length;
             value = entry.result;
         }
@@ -79,9 +51,9 @@ const AqaraOppleLifelineAttributeType = new ZCLDataType(
             name,
             value
         }
-        
-        // }
 
+        //console.debug("Lifeline attribute", {... result, "hex": result.id.toString(16)});
+        
         if (returnLength) {
             return { result, length: index - origIndex };
         }
@@ -94,17 +66,17 @@ const AqaraOppleLifelineReportType = new ZCLDataType(
     'AqaraOppleLifelineReport',
     -1,
     () => { throw new Error('Not supported') },
-    (buffer: Buffer, index: number, returnLength: boolean) => {
-        console.log("AqaraOppleLifelineReportType", buffer)
+    ((buffer: Buffer, index: number, returnLength: boolean) => {
         let { result, length } = ZCLDataTypes.buffer8.fromBuffer(buffer, index, true);
-        console.log("buffer8", result)
         let attrs = ZCLDataTypes.Array0(AqaraOppleLifelineAttributeType).fromBuffer(result, 0) as { id: number, name: string, value: any }[];
-        let ret = attrs.reduce((r, { id, name, value }) => Object.assign(r, { [name]: value, [id]: value }), {});
+        let ret = attrs.reduce((r, { id, name, value }) => Object.assign(r, { [name]: value }), {});
+        console.log("ret", ret);
         if (returnLength) {
             return { ret, length };
         }
         return ret;
-    });
+    })
+    );
 
 // Define the cluster attributes
 const ATTRIBUTES = {
