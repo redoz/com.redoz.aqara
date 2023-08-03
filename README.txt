@@ -1,1 +1,1 @@
-Adds support for Aqara devices
+The Cube T1 Pro offers dice-like indicators, that lets you use the 6 sides to control different scenes or devices. Rotating, shaking, holding or triggering after one-minute inactivity will create more possibilities. Alternatively, you can switch the T1 Pro to the Action Mode. Push, shake, rotate, tap twice, flip 180°, flip 90° and trigger after one-minute.
