@@ -4,15 +4,15 @@ const { ZigBeeDevice } = require("homey-zigbeedriver");
 
 import { CLUSTER, ZCLNode } from "zigbee-clusters";
 
-import { AqaraOppleCluster, AqaraOppleLifelineReport } from './AqaraOppleCluster';
+import { AqaraOppleCluster, AqaraOppleDeviceInfoAttribute, AqaraOppleLifelineReport } from './AqaraOppleCluster';
 
 import { AqaraAnalogInputCluster } from './AqaraAnalogInputCluster';
 
 import { Device, FlowCardTriggerDevice } from 'homey'
 
-const { debug } = require("zigbee-clusters");
+// const { debug } = require("zigbee-clusters");
 
-debug(true);
+// debug(true);
 
 enum Mode {
   Action = 0,
@@ -84,8 +84,8 @@ class CubeT1Pro extends ZigBeeDevice {
 
 
   async onNodeInit({ zclNode }: { zclNode: ZCLNode }) {
-    this.enableDebug();
-    this.debug(true);
+    // this.enableDebug();
+    // this.debug(true);
     this.log('Initializing node...');
 
     this._cubeRotateTrigger = this.homey.flow.getDeviceTriggerCard("cube_rotate");
@@ -166,16 +166,16 @@ class CubeT1Pro extends ZigBeeDevice {
 
     if (this.isFirstInit()) {
       // without this the cube only uses the onOff cluster
-      this.log("Configuring Cube to operate in Event mode...");
+      this.debug("Configuring Cube to operate in Event mode...");
       var cluster = zclNode.endpoints[1].clusters[AqaraOppleCluster.NAME]!;
       await cluster.writeAttributes({ operation_mode: 1 });
-      this.log("Reading mode attribute...");
+      this.debug("Reading mode attribute...");
       var result = await cluster.readAttributes(['mode']);
       this._mode = result.mode as number;
       await this.setSettings({
         mode: Mode[this._mode]
       });
-      this.log("Cube successfully configured");
+      this.debug("Cube successfully configured");
       // TODO can we fail the pairing operation if fails?
     } else {
       // should probably figure out how to work with Enums in typescript
@@ -187,70 +187,52 @@ class CubeT1Pro extends ZigBeeDevice {
       this._mode = mode;
       await this.setMode(mode);
     })
+    
+    zclNode.endpoints[2].clusters.aqaraOpple?.on('attr.side', this.sideUpHandler.bind(this));
 
-    // scene mode "side up"
-    zclNode.endpoints[2].clusters.aqaraOpple?.on('attr.side', async (side: number) => {
-      side += 1; // sides are 0 indexed from the device
-      this.log("side up", side);
-      await this.triggerCubeFlip(undefined, side);
-    })
-
-
-    zclNode.endpoints[1]
-      .clusters.aqaraOpple!
-      .on('attr.lifeline', this.aparaOppleLifelineHandler.bind(this));
+    zclNode.endpoints[1].clusters.aqaraOpple!.on('attr.lifeline', this.aparaOppleLifelineHandler.bind(this));
       
-    zclNode.endpoints[2]
-      .clusters.multistateInput!
-      .on('attr.presentValue', this.multiStateInputHandler.bind(this));
+    zclNode.endpoints[2].clusters.multistateInput!.on('attr.presentValue', this.multiStateInputHandler.bind(this));
 
-    zclNode.endpoints[3]
-      .clusters[AqaraAnalogInputCluster.NAME]!
-      .on('attr.presentValue', this.triggerCubeRotate.bind(this));
+    zclNode.endpoints[3].clusters[AqaraAnalogInputCluster.NAME]!.on('attr.presentValue', this.triggerCubeRotate.bind(this));
 
-    zclNode.endpoints[3]
-      .clusters[AqaraAnalogInputCluster.NAME]!
-      .on('attr.side', async (side: number) => {
-        side += 1; // sides are 0 indexed from the device
-        this.log("side up", side);
-        await this.triggerCubeFlip(undefined, side);
-      });
+    zclNode.endpoints[3].clusters[AqaraAnalogInputCluster.NAME]!.on('attr.side', this.sideUpHandler.bind(this));
 
-    zclNode.endpoints[3]
-      .clusters[AqaraAnalogInputCluster.NAME]!
-      .on('attr.unknown_0x010b', async (value: number) => {
+    // zclNode.endpoints[3]
+    //   .clusters[AqaraAnalogInputCluster.NAME]!
+    //   .on('attr.unknown_0x010b', async (value: number) => {
         
-        this.log("unknown_0x010b", value);
-      });
-
+    //     this.debug("unknown_0x010b", value);
+    //   });
+    this.log('Node initialized');
   }
 
   async triggerCubeRotate(degrees: number) {
-    this.log("Trigger cube rotate", { degrees });
+    this.debug("Trigger cube rotate", { degrees });
 
     // we _should_ always have this
     var side = this.getCapabilityValue('cube_side_up') ?? 0;
     this._cubeRotateTrigger!
       .trigger(this as unknown as Device, { degrees, side }, { degrees, side })
-      .then((arg: any) => this.log("triggered: ", arg))
+      .then((arg: any) => this.debug("triggered: ", arg))
       .catch((arg: any) => this.error("error: ", arg))
   }
 
   async triggerCubeShake() {
-    this.log("Trigger cube shake");
+    this.debug("Trigger cube shake");
 
     this._cubeShakeTrigger!
       .trigger(this as unknown as Device, {}, {})
-      .then((arg: any) => this.log("triggered: ", arg))
+      .then((arg: any) => this.debug("triggered: ", arg))
       .catch((arg: any) => this.error("error: ", arg))
   }
 
   async triggerCubeTap(side: number) {
-    this.log("Trigger cube tap");
+    this.debug("Trigger cube tap");
 
     this._cubeTapTrigger!
       .trigger(this as unknown as Device, { side }, { side })
-      .then((arg: any) => this.log("triggered: ", arg))
+      .then((arg: any) => this.debug("triggered: ", arg))
       .catch((arg: any) => this.error("error: ", arg))
 
     this.setCapabilityValue('cube_side_up', side).catch(this.error);
@@ -263,50 +245,50 @@ class CubeT1Pro extends ZigBeeDevice {
     if (fromSide === toSide)
       return;
 
-    this.log("Trigger cube flip");
+    this.debug("Trigger cube flip");
     this._cubeFlipTrigger!
       .trigger(this as unknown as Device, { fromSide, toSide }, { fromSide, toSide })
-      .then((arg: any) => this.log("triggered: ", arg))
+      .then((arg: any) => this.debug("triggered: ", arg))
       .catch((arg: any) => this.error("error: ", arg))
 
     this.setCapabilityValue('cube_side_up', toSide).catch(this.error);
   }
 
   async triggerCubePush(side: number) {
-    this.log("Trigger cube push");
+    this.debug("Trigger cube push");
 
     this._cubePushTrigger!
       .trigger(this as unknown as Device, { side }, { side })
-      .then((arg: any) => this.log("triggered: ", arg))
+      .then((arg: any) => this.debug("triggered: ", arg))
       .catch((arg: any) => this.error("error: ", arg))
 
     this.setCapabilityValue('cube_side_up', side).catch(this.error);
   }
 
   async triggerCubePickUp() {
-    this.log("Trigger cube pick-up");
+    this.debug("Trigger cube pick-up");
 
     this._cubePickUpTrigger!
       .trigger(this as unknown as Device, {}, {})
-      .then((arg: any) => this.log("triggered: ", arg))
+      .then((arg: any) => this.debug("triggered: ", arg))
       .catch((arg: any) => this.error("error: ", arg))
   }
 
   async triggerCubeThrow() {
-    this.log("Trigger cube throw");
+    this.debug("Trigger cube throw");
 
     this._cubeThrowTrigger!
       .trigger(this as unknown as Device, {}, {})
-      .then((arg: any) => this.log("triggered: ", arg))
+      .then((arg: any) => this.debug("triggered: ", arg))
       .catch((arg: any) => this.error("error: ", arg))
   }
 
   async triggerCubeMotionAfterInactivity() {
-    this.log("Trigger cube motion");
+    this.debug("Trigger cube motion");
 
     this._cubeMotionAfterInactivityTrigger!
       .trigger(this as unknown as Device, {}, {})
-      .then((arg: any) => this.log("triggered: ", arg))
+      .then((arg: any) => this.debug("triggered: ", arg))
       .catch((arg: any) => this.error("error: ", arg))
   }
 
@@ -314,6 +296,12 @@ class CubeT1Pro extends ZigBeeDevice {
     await this.setSettings({
       mode: Mode[mode]
     });
+  }
+
+  async sideUpHandler(side: number) {
+    side += 1; // sides are 0 indexed from the device
+    this.debug("side up", side);
+    await this.triggerCubeFlip(undefined, side);
   }
 
   async multiStateInputHandler(data: number) {
@@ -324,7 +312,7 @@ class CubeT1Pro extends ZigBeeDevice {
     if (data === 1) {
       // throw
 
-      this.log("multiStateInputHandler", {
+      this.debug("multiStateInputHandler", {
         data,
         event: "throw"
       });
@@ -332,7 +320,7 @@ class CubeT1Pro extends ZigBeeDevice {
     }
     else if (data === 2) {
       // activity after one minute of inactivity
-      this.log("multiStateInputHandler", {
+      this.debug("multiStateInputHandler", {
         data,
         event: "activityAfterInactivity"
       });
@@ -344,7 +332,7 @@ class CubeT1Pro extends ZigBeeDevice {
       await this.setMode(Mode.Scene);
 
       // pick up
-      this.log("multiStateInputHandler", {
+      this.debug("multiStateInputHandler", {
         data,
         event: "pickUp"
       });
@@ -356,7 +344,7 @@ class CubeT1Pro extends ZigBeeDevice {
       await this.setMode(Mode.Scene);
 
       let toSide = toSideBits + 1;
-      this.log("multiStateInputHandler", {
+      this.debug("multiStateInputHandler", {
         data,
         event: "sideUp"
       });
@@ -369,7 +357,7 @@ class CubeT1Pro extends ZigBeeDevice {
 
       let fromSide = fromSideBits + 1;
       let toSide = toSideBits + 1;
-      this.log("multiStateInputHandler", {
+      this.debug("multiStateInputHandler", {
         data,
         event: "flip90",
         fromSide,
@@ -384,7 +372,7 @@ class CubeT1Pro extends ZigBeeDevice {
 
       let toSide = toSideBits + 1;
       let fromSide = 7 - toSide;
-      this.log("multiStateInputHandler", {
+      this.debug("multiStateInputHandler", {
         data,
         event: "flip180",
         fromSide,
@@ -393,7 +381,7 @@ class CubeT1Pro extends ZigBeeDevice {
       await this.triggerCubeFlip(fromSide, toSide);
     } else if (eventBits == 0 && fromSideBits === 0 && toSideBits === 0) {
       // shake
-      this.log("multiStateInputHandler", {
+      this.debug("multiStateInputHandler", {
         data,
         event: "shake"
       });
@@ -405,7 +393,7 @@ class CubeT1Pro extends ZigBeeDevice {
       await this.setMode(Mode.Action);
 
       let side = toSideBits + 1;
-      this.log("multiStateInputHandler", {
+      this.debug("multiStateInputHandler", {
         data,
         event: "tap",
         side
@@ -414,14 +402,14 @@ class CubeT1Pro extends ZigBeeDevice {
     } else if (eventBits === 4) {
       // push
       let side = toSideBits + 1;
-      this.log("multiStateInputHandler", {
+      this.debug("multiStateInputHandler", {
         data,
         event: "push",
         side
       });
       await this.triggerCubePush(side)
     } else {
-      this.log("multiStateInputHandler", {
+      this.debug("multiStateInputHandler", {
         data,
         eventBits,
         fromSideBits,
@@ -432,25 +420,34 @@ class CubeT1Pro extends ZigBeeDevice {
   }
 
   aparaOppleLifelineHandler(data: AqaraOppleLifelineReport) {
-    this.log("aparaOppleLifelineHandler", data)
+    if (data[AqaraOppleDeviceInfoAttribute.OperationMode]) {
+      this.setMode(data[AqaraOppleDeviceInfoAttribute.OperationMode]);
+    }
+    if (data[AqaraOppleDeviceInfoAttribute.BatteryVoltage]) {
+      var batteryVoltage = data[AqaraOppleDeviceInfoAttribute.BatteryVoltage];
+      var percentage = Math.min(1, Math.abs((batteryVoltage - 2000) / 1000)) * 100;
+      
+      this.setCapabilityValue('measure_battery', percentage);
+    }
+    this.debug("aparaOppleLifelineHandler", data)
   }
 
   /**
    * onInit is called when the device is initialized.
    */
   // async onInit() {
-  //   this.log('MyDevice has been initialized');
+  //   this.debug('MyDevice has been initialized');
 
   //   var node = await this.homey.zigbee.getNode(this);
 
-  //   this.log("node", node);
+  //   this.debug("node", node);
   // }
 
   /**
    * onAdded is called when the user adds the device, called just after pairing.
    */
   async onAdded() {
-    this.log('MyDevice has been added');
+    this.debug('MyDevice has been added');
   }
 
   /**
@@ -470,7 +467,7 @@ class CubeT1Pro extends ZigBeeDevice {
     newSettings: { [key: string]: boolean | string | number | undefined | null };
     changedKeys: string[];
   }): Promise<string | void> {
-    this.log("MyDevice settings where changed");
+    this.debug("MyDevice settings where changed");
   }
 
   /**
@@ -479,14 +476,14 @@ class CubeT1Pro extends ZigBeeDevice {
    * @param {string} name The new name
    */
   async onRenamed(name: string) {
-    this.log('MyDevice was renamed');
+    this.debug('MyDevice was renamed');
   }
 
   /**
    * onDeleted is called when the user deleted the device.
    */
   async onDeleted() {
-    this.log('MyDevice has been deleted');
+    this.debug('MyDevice has been deleted');
   }
 
 }

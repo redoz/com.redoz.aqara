@@ -29,10 +29,7 @@ const AqaraOppleLifelineAttributeType = new ZCLDataType(
         // Abort if no valid data type was found
         if (!dataType) throw new TypeError(`Invalid type (${dataTypeId}) for attribute: ${id}`);
 
-        // eslint-disable-next-line no-mixed-operators
-        let hex = '0' + id.toString(16);
-        hex = hex.substring(hex.length - 2);
-        var name = AqaraOppleDeviceInfoAttribute[id] ?? '0x' + hex;
+        var name = AqaraOppleDeviceInfoAttribute[id] ?? '0x' + ('0' + id.toString(16)).slice(-2);
 
         // Parse the value from the buffer using the DataType
         const entry = dataType.fromBuffer(buffer, index, true);
@@ -69,10 +66,9 @@ const AqaraOppleLifelineReportType = new ZCLDataType(
     ((buffer: Buffer, index: number, returnLength: boolean) => {
         let { result, length } = ZCLDataTypes.buffer8.fromBuffer(buffer, index, true);
         let attrs = ZCLDataTypes.Array0(AqaraOppleLifelineAttributeType).fromBuffer(result, 0) as { id: number, name: string, value: any }[];
-        let ret = attrs.reduce((r, { id, name, value }) => Object.assign(r, { [name]: value }), {});
-        console.log("ret", ret);
+        let ret = attrs.reduce((r, { id, name, value }) => Object.assign(r, { [name]: value, [id]: value }), {});
         if (returnLength) {
-            return { ret, length };
+            return { result: ret, length };
         }
         return ret;
     })
