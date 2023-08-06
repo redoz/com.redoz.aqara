@@ -156,7 +156,7 @@
                 "en": "Tap [[device]] with side [[side]] facing up."
             },
             "hint": {
-                "en": "Pick up cube and tap it twice on a surface."
+                "en": "Pick up cube and tap it twice on a surface. Only works in Action mode."
             },
             "args": [
                 {
@@ -461,7 +461,7 @@
                 "en": "Pick up [[device]] and hold."
             },
             "hint": {
-                "en": "Pick up and hold cube still."
+                "en": "Pick up and hold cube still. Only works in Scene mode."
             },
             "args": [
                 {
