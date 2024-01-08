@@ -1,0 +1,522 @@
+{
+    "triggers": [
+        {
+            "id": "cube_rotate",
+            "title": {
+                "en": "Rotate cube"
+            },
+            "titleFormatted": {
+                "en": "Rotate [[device]] at least [[degrees]] degrees in [[direction]] direction on [[side]]."
+            },
+            "hint": {
+                "en": "Cube rotated on a surface."
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "title": {
+                        "en": "Cube"
+                    }
+                },
+                {
+                    "name": "degrees",
+                    "type": "number",
+                    "title": {
+                        "en": "Degrees"
+                    }
+                },
+                {
+                    "name": "direction",
+                    "type": "dropdown",
+                    "title": {
+                        "en": "Direction"
+                    },
+                    "values": [
+                        {
+                            "id": "either",
+                            "label": {
+                                "en": "Either"
+                            }
+                        },
+                        {
+                            "id": "clockwise",
+                            "label": {
+                                "en": "Clockwise"
+                            }
+                        },
+                        {
+                            "id": "counterclockwise",
+                            "label": {
+                                "en": "Counterclockwise"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "side",
+                    "type": "dropdown",
+                    "required": false,
+                    "placeholder": {
+                        "en": "Side"
+                    },
+                    "title": {
+                        "en": "Side"
+                    },
+                    "values": [
+                        {
+                            "id": "one",
+                            "label": {
+                                "en": "1"
+                            }
+                        },
+                        {
+                            "id": "two",
+                            "label": {
+                                "en": "2"
+                            }
+                        },
+                        {
+                            "id": "three",
+                            "label": {
+                                "en": "3"
+                            }
+                        },
+                        {
+                            "id": "four",
+                            "label": {
+                                "en": "4"
+                            }
+                        },
+                        {
+                            "id": "five",
+                            "label": {
+                                "en": "5"
+                            }
+                        },
+                        {
+                            "id": "six",
+                            "label": {
+                                "en": "6"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "tokens": [
+                {
+                    "name": "degrees",
+                    "type": "number",
+                    "title": {
+                        "en": "Degrees"
+                    },
+                    "example": {
+                        "en": "90"
+                    }
+                },
+                {
+                    "name": "side",
+                    "type": "number",
+                    "title": {
+                        "en": "Side facing up"
+                    },
+                    "example": {
+                        "en": "1"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "cube_shake",
+            "title": {
+                "en": "Shake cube"
+            },
+            "titleFormatted": {
+                "en": "Shake [[device]]."
+            },
+            "hint": {
+                "en": "Pick up cube and shake it twice."
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "title": {
+                        "en": "Cube"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "cube_tap",
+            "title": {
+                "en": "Tap cube"
+            },
+            "titleFormatted": {
+                "en": "Tap [[device]] with side [[side]] facing up."
+            },
+            "hint": {
+                "en": "Pick up cube and tap it twice on a surface. Only works in Action mode."
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "title": {
+                        "en": "Cube"
+                    }
+                },
+                {
+                    "name": "side",
+                    "type": "dropdown",
+                    "required": false,
+                    "placeholder": {
+                        "en": "Side"
+                    },
+                    "title": {
+                        "en": "Side"
+                    },
+                    "values": [
+                        {
+                            "id": "one",
+                            "label": {
+                                "en": "1"
+                            }
+                        },
+                        {
+                            "id": "two",
+                            "label": {
+                                "en": "2"
+                            }
+                        },
+                        {
+                            "id": "three",
+                            "label": {
+                                "en": "3"
+                            }
+                        },
+                        {
+                            "id": "four",
+                            "label": {
+                                "en": "4"
+                            }
+                        },
+                        {
+                            "id": "five",
+                            "label": {
+                                "en": "5"
+                            }
+                        },
+                        {
+                            "id": "six",
+                            "label": {
+                                "en": "6"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "tokens": [
+                {
+                    "name": "side",
+                    "type": "number",
+                    "title": {
+                        "en": "Side"
+                    },
+                    "example": {
+                        "en": "1"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "cube_flip",
+            "title": {
+                "en": "Flip cube"
+            },
+            "titleFormatted": {
+                "en": "Flip [[device]] from side [[fromSide]] to [[toSide]]."
+            },
+            "hint": {
+                "en": "Flip cube from one side to another."
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "title": {
+                        "en": "Cube"
+                    }
+                },
+                {
+                    "name": "fromSide",
+                    "type": "dropdown",
+                    "required": false,
+                    "placeholder": {
+                        "en": "Side"
+                    },
+                    "title": {
+                        "en": "Side"
+                    },
+                    "values": [
+                        {
+                            "id": "one",
+                            "label": {
+                                "en": "1"
+                            }
+                        },
+                        {
+                            "id": "two",
+                            "label": {
+                                "en": "2"
+                            }
+                        },
+                        {
+                            "id": "three",
+                            "label": {
+                                "en": "3"
+                            }
+                        },
+                        {
+                            "id": "four",
+                            "label": {
+                                "en": "4"
+                            }
+                        },
+                        {
+                            "id": "five",
+                            "label": {
+                                "en": "5"
+                            }
+                        },
+                        {
+                            "id": "six",
+                            "label": {
+                                "en": "6"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "toSide",
+                    "type": "dropdown",
+                    "required": false,
+                    "placeholder": {
+                        "en": "Side"
+                    },
+                    "title": {
+                        "en": "Side"
+                    },
+                    "values": [
+                        {
+                            "id": "one",
+                            "label": {
+                                "en": "1"
+                            }
+                        },
+                        {
+                            "id": "two",
+                            "label": {
+                                "en": "2"
+                            }
+                        },
+                        {
+                            "id": "three",
+                            "label": {
+                                "en": "3"
+                            }
+                        },
+                        {
+                            "id": "four",
+                            "label": {
+                                "en": "4"
+                            }
+                        },
+                        {
+                            "id": "five",
+                            "label": {
+                                "en": "5"
+                            }
+                        },
+                        {
+                            "id": "six",
+                            "label": {
+                                "en": "6"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "tokens": [
+                {
+                    "name": "fromSide",
+                    "type": "number",
+                    "title": {
+                        "en": "From Side"
+                    },
+                    "example": {
+                        "en": "1"
+                    }
+                },
+                {
+                    "name": "toSide",
+                    "type": "number",
+                    "title": {
+                        "en": "To Side"
+                    },
+                    "example": {
+                        "en": "4"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "cube_push",
+            "title": {
+                "en": "Push cube"
+            },
+            "titleFormatted": {
+                "en": "Push [[device]] with side [[side]] facing up."
+            },
+            "hint": {
+                "en": "Push cube on a surface. Only works in Action mode."
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "title": {
+                        "en": "Cube"
+                    }
+                },
+                {
+                    "name": "side",
+                    "type": "dropdown",
+                    "required": false,
+                    "placeholder": {
+                        "en": "Side"
+                    },
+                    "title": {
+                        "en": "Side"
+                    },
+                    "values": [
+                        {
+                            "id": "one",
+                            "label": {
+                                "en": "1"
+                            }
+                        },
+                        {
+                            "id": "two",
+                            "label": {
+                                "en": "2"
+                            }
+                        },
+                        {
+                            "id": "three",
+                            "label": {
+                                "en": "3"
+                            }
+                        },
+                        {
+                            "id": "four",
+                            "label": {
+                                "en": "4"
+                            }
+                        },
+                        {
+                            "id": "five",
+                            "label": {
+                                "en": "5"
+                            }
+                        },
+                        {
+                            "id": "six",
+                            "label": {
+                                "en": "6"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "tokens": [
+                {
+                    "name": "side",
+                    "type": "number",
+                    "title": {
+                        "en": "Side facing up"
+                    },
+                    "example": {
+                        "en": "1"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "cube_pick_up",
+            "title": {
+                "en": "Pick up and hold cube"
+            },
+            "titleFormatted": {
+                "en": "Pick up [[device]] and hold."
+            },
+            "hint": {
+                "en": "Pick up and hold cube still. Only works in Scene mode."
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "title": {
+                        "en": "Cube"
+                    }
+                }
+            ],
+            "tokens": []
+        },
+        {
+            "id": "cube_throw",
+            "title": {
+                "en": "Throw cube"
+            },
+            "titleFormatted": {
+                "en": "Throw [[device]]."
+            },
+            "hint": {
+                "en": "Hold cube an make throwing motion."
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "title": {
+                        "en": "Cube"
+                    }
+                }
+            ],
+            "tokens": []
+        },
+        {
+            "id": "cube_motion_after_inactivity",
+            "title": {
+                "en": "Cube moved after a minute of inactivity"
+            },
+            "titleFormatted": {
+                "en": "[[device]] moved after a minute of inactivity."
+            },
+            "hint": {
+                "en": "Triggers when cube is moved after being inactive for more than one minute."
+            },
+            "args": [
+                {
+                    "name": "device",
+                    "type": "device",
+                    "title": {
+                        "en": "Cube"
+                    }
+                }
+            ],
+            "tokens": []
+        }
+    ]
+}

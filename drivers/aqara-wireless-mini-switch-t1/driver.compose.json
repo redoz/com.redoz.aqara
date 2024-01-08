@@ -1,0 +1,37 @@
+{
+  "name": {
+    "en": "Aqara Wireless Mini Switch T1"
+  },
+  "class": "button",
+  "capabilities": [
+    "measure_battery"
+  ],
+  "platforms": [
+    "local"
+  ],
+  "connectivity": [
+    "zigbee"
+  ],
+  "zigbee": {
+    "manufacturerName": "LUMI",
+    "productId": ["lumi.remote.b1acn02"],
+    "endpoints": {
+      "1": {
+        "clusters": [0, 1, 18, 64704],
+        "bindings": [0, 1, 18, 64704]
+      }
+    },
+    "learnmode": {
+      "image": "/drivers/my_driver/assets/learnmode.svg",
+      "instruction": { "en": "Press and hold the small button on the side for 5 seconds until the light starts blinking blue." }
+    }
+  },  
+  "images": {
+    "small": "{{driverAssetsPath}}/images/small.png",
+    "large": "{{driverAssetsPath}}/images/large.png",
+    "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+  },
+  "energy": {
+    "batteries": ["CR2032"]
+  }  
+}

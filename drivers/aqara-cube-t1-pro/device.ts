@@ -4,7 +4,7 @@ const { ZigBeeDevice } = require("homey-zigbeedriver");
 
 import { CLUSTER, ZCLNode } from "zigbee-clusters";
 
-import { AqaraOppleCluster, AqaraOppleDeviceInfoAttribute, AqaraOppleLifelineReport } from './AqaraOppleCluster';
+import { AqaraOppleCluster, AqaraOppleDeviceInfoAttribute, AqaraOppleLifelineReport } from '../../shared/AqaraOppleCluster';
 
 import { AqaraAnalogInputCluster } from './AqaraAnalogInputCluster';
 
