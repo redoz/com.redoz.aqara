@@ -84,6 +84,7 @@ class CubeT1Pro extends ZigBeeDevice {
 
 
   async onNodeInit({ zclNode }: { zclNode: ZCLNode }) {
+
     // this.enableDebug();
     // this.debug(true);
     this.log('Initializing node...');
