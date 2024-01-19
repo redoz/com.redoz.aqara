@@ -590,6 +590,77 @@
           }
         ],
         "tokens": []
+      },
+      {
+        "id": "main_button_pressed",
+        "title": {
+          "en": "Button pressed"
+        },
+        "titleFormatted": {
+          "en": "Button [[action]]."
+        },
+        "hint": {
+          "en": "The main button was pressed."
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=aqara-wireless-mini-switch-t1"
+          },
+          {
+            "name": "action",
+            "type": "dropdown",
+            "title": {
+              "en": "Action"
+            },
+            "values": [
+              {
+                "id": "press_once",
+                "label": {
+                  "en": "Pressed once"
+                }
+              },
+              {
+                "id": "press_twice",
+                "label": {
+                  "en": "Pressed twice"
+                }
+              },
+              {
+                "id": "press_thrice",
+                "label": {
+                  "en": "Pressed three times"
+                }
+              },
+              {
+                "id": "press_five_times",
+                "label": {
+                  "en": "Pressed five times"
+                }
+              },
+              {
+                "id": "press_six_or_more_times",
+                "label": {
+                  "en": "Pressed six or more times"
+                }
+              },
+              {
+                "id": "press_and_hold",
+                "label": {
+                  "en": "Pressed and held"
+                }
+              },
+              {
+                "id": "release_after_hold",
+                "label": {
+                  "en": "Released after being held"
+                }
+              }
+            ]
+          }
+        ],
+        "tokens": []
       }
     ]
   },

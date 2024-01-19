@@ -4,11 +4,15 @@ import { CLUSTER, ZCLNode } from "zigbee-clusters";
 
 import { AqaraOppleCluster, AqaraOppleDeviceInfoAttribute, AqaraOppleLifelineReport } from '../../shared/AqaraOppleCluster';
 
+import { ButtonAction, WirelessMiniSwitchT1Driver } from './driver';
+import Homey from 'homey';
+
 const { debug } = require("zigbee-clusters");
 
 debug(true);
 
 class WirelessMiniSwitchT1 extends ZigBeeDevice {
+
 
   /**
    * onInit is called when the device is initialized.
@@ -34,8 +38,7 @@ class WirelessMiniSwitchT1 extends ZigBeeDevice {
 
 
     if (this.isFirstInit()) {
-      // without this the cube only uses the onOff cluster
-      this.debug("Configuring Cube to operate in Event mode...");
+      this.debug("Configuring switch...");
       var cluster = zclNode.endpoints[1].clusters[AqaraOppleCluster.NAME]!;
       await cluster.writeAttributes({ operation_mode: 1 });
       this.debug("Switch successfully configured");
@@ -76,6 +79,49 @@ class WirelessMiniSwitchT1 extends ZigBeeDevice {
   }
 
   async multiStateInputHandler(data: number) {
+    let device : Homey.Device = this as unknown as Homey.Device;
+     this.driver.ready().then(async () => {
+      this.log("WAHOOO");
+      let action : ButtonAction 
+      
+      switch (data) {
+        case 1:
+          action = "press_once";
+          break;
+
+        case 2:
+          action = "press_twice";
+          break;
+
+        case 3:
+          action = "press_thrice";
+          break;
+
+        case 5:
+          action = "press_five_times";
+          break;
+
+        case 6:
+          action = "press_six_or_more_times";
+          break;
+
+        case 0:
+          action = "press_and_hold";
+          break;
+
+        case 255:
+          action = "release_after_hold";
+          break;
+        
+        default:
+          this.log("Unknown message: " + data)
+          return;
+      }
+        
+      
+      await (this.driver as WirelessMiniSwitchT1Driver).triggerOnButtonPressed(device, {action});
+    });
+
     this.debug("multiStateInputHandler", {
       data
     });
