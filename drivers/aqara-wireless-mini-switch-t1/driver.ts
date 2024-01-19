@@ -23,18 +23,16 @@ export class WirelessMiniSwitchT1Driver extends Homey.Driver {
 
     this._buttonPressedTrigger = this.homey.flow.getDeviceTriggerCard("main_button_pressed");
     this._buttonPressedTrigger.registerRunListener(async (args: any, state: ButtonPushTriggerState) => {
-      console.log("registerRunListener", args, state)
-      return true;
-    })
+      return args.action === state.action;
+    });
 
     this.log('WirelessMiniSwitchT1Driver has been initialized');
   }
 
   public async triggerOnButtonPressed(device : Homey.Device, state: ButtonPushTriggerState) {
-    this.log("triggerOnButtonPressed", state);
     await this._buttonPressedTrigger!
       .trigger(device, undefined, state)
-      .then(value => this.log("triggerOnButtonPressed value", value))
+      .then(this.log)
       .catch(this.error);
   }
 }

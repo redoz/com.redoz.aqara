@@ -81,7 +81,6 @@ class WirelessMiniSwitchT1 extends ZigBeeDevice {
   async multiStateInputHandler(data: number) {
     let device : Homey.Device = this as unknown as Homey.Device;
      this.driver.ready().then(async () => {
-      this.log("WAHOOO");
       let action : ButtonAction 
       
       switch (data) {
