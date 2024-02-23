@@ -39,7 +39,7 @@
           "en": "Rotate cube"
         },
         "titleFormatted": {
-          "en": "Rotate [[device]] at least [[degrees]] degrees in [[direction]] direction on [[side]]."
+          "en": "Rotate at least [[degrees]] degrees in [[direction]] direction on [[side]]."
         },
         "hint": {
           "en": "Cube rotated on a surface."
@@ -49,13 +49,6 @@
             "type": "device",
             "name": "device",
             "filter": "driver_id=aqara-cube-t1-pro"
-          },
-          {
-            "name": "device",
-            "type": "device",
-            "title": {
-              "en": "Cube"
-            }
           },
           {
             "name": "degrees",
@@ -170,7 +163,7 @@
           "en": "Shake cube"
         },
         "titleFormatted": {
-          "en": "Shake [[device]]."
+          "en": "Shake."
         },
         "hint": {
           "en": "Pick up cube and shake it twice."
@@ -180,13 +173,6 @@
             "type": "device",
             "name": "device",
             "filter": "driver_id=aqara-cube-t1-pro"
-          },
-          {
-            "name": "device",
-            "type": "device",
-            "title": {
-              "en": "Cube"
-            }
           }
         ]
       },
@@ -196,7 +182,7 @@
           "en": "Tap cube"
         },
         "titleFormatted": {
-          "en": "Tap [[device]] with side [[side]] facing up."
+          "en": "Tap with side [[side]] facing up."
         },
         "hint": {
           "en": "Pick up cube and tap it twice on a surface. Only works in Action mode."
@@ -206,13 +192,6 @@
             "type": "device",
             "name": "device",
             "filter": "driver_id=aqara-cube-t1-pro"
-          },
-          {
-            "name": "device",
-            "type": "device",
-            "title": {
-              "en": "Cube"
-            }
           },
           {
             "name": "side",
@@ -283,7 +262,7 @@
           "en": "Flip cube"
         },
         "titleFormatted": {
-          "en": "Flip [[device]] from side [[fromSide]] to [[toSide]]."
+          "en": "Flip from side [[fromSide]] to [[toSide]]."
         },
         "hint": {
           "en": "Flip cube from one side to another."
@@ -293,13 +272,6 @@
             "type": "device",
             "name": "device",
             "filter": "driver_id=aqara-cube-t1-pro"
-          },
-          {
-            "name": "device",
-            "type": "device",
-            "title": {
-              "en": "Cube"
-            }
           },
           {
             "name": "fromSide",
@@ -429,7 +401,7 @@
           "en": "Push cube"
         },
         "titleFormatted": {
-          "en": "Push [[device]] with side [[side]] facing up."
+          "en": "Push with side [[side]] facing up."
         },
         "hint": {
           "en": "Push cube on a surface. Only works in Action mode."
@@ -439,13 +411,6 @@
             "type": "device",
             "name": "device",
             "filter": "driver_id=aqara-cube-t1-pro"
-          },
-          {
-            "name": "device",
-            "type": "device",
-            "title": {
-              "en": "Cube"
-            }
           },
           {
             "name": "side",
@@ -516,7 +481,7 @@
           "en": "Pick up and hold cube"
         },
         "titleFormatted": {
-          "en": "Pick up [[device]] and hold."
+          "en": "Pick up and hold."
         },
         "hint": {
           "en": "Pick up and hold cube still. Only works in Scene mode."
@@ -526,13 +491,6 @@
             "type": "device",
             "name": "device",
             "filter": "driver_id=aqara-cube-t1-pro"
-          },
-          {
-            "name": "device",
-            "type": "device",
-            "title": {
-              "en": "Cube"
-            }
           }
         ],
         "tokens": []
@@ -543,7 +501,7 @@
           "en": "Throw cube"
         },
         "titleFormatted": {
-          "en": "Throw [[device]]."
+          "en": "Throw."
         },
         "hint": {
           "en": "Hold cube an make throwing motion."
@@ -553,13 +511,6 @@
             "type": "device",
             "name": "device",
             "filter": "driver_id=aqara-cube-t1-pro"
-          },
-          {
-            "name": "device",
-            "type": "device",
-            "title": {
-              "en": "Cube"
-            }
           }
         ],
         "tokens": []
@@ -570,7 +521,7 @@
           "en": "Cube moved after a minute of inactivity"
         },
         "titleFormatted": {
-          "en": "[[device]] moved after a minute of inactivity."
+          "en": "Cube moved after a minute of inactivity."
         },
         "hint": {
           "en": "Triggers when cube is moved after being inactive for more than one minute."
@@ -580,13 +531,6 @@
             "type": "device",
             "name": "device",
             "filter": "driver_id=aqara-cube-t1-pro"
-          },
-          {
-            "name": "device",
-            "type": "device",
-            "title": {
-              "en": "Cube"
-            }
           }
         ],
         "tokens": []

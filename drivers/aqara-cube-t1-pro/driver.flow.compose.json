@@ -6,19 +6,12 @@
                 "en": "Rotate cube"
             },
             "titleFormatted": {
-                "en": "Rotate [[device]] at least [[degrees]] degrees in [[direction]] direction on [[side]]."
+                "en": "Rotate at least [[degrees]] degrees in [[direction]] direction on [[side]]."
             },
             "hint": {
                 "en": "Cube rotated on a surface."
             },
             "args": [
-                {
-                    "name": "device",
-                    "type": "device",
-                    "title": {
-                        "en": "Cube"
-                    }
-                },
                 {
                     "name": "degrees",
                     "type": "number",
@@ -132,19 +125,12 @@
                 "en": "Shake cube"
             },
             "titleFormatted": {
-                "en": "Shake [[device]]."
+                "en": "Shake."
             },
             "hint": {
                 "en": "Pick up cube and shake it twice."
             },
             "args": [
-                {
-                    "name": "device",
-                    "type": "device",
-                    "title": {
-                        "en": "Cube"
-                    }
-                }
             ]
         },
         {
@@ -153,19 +139,12 @@
                 "en": "Tap cube"
             },
             "titleFormatted": {
-                "en": "Tap [[device]] with side [[side]] facing up."
+                "en": "Tap with side [[side]] facing up."
             },
             "hint": {
                 "en": "Pick up cube and tap it twice on a surface. Only works in Action mode."
             },
             "args": [
-                {
-                    "name": "device",
-                    "type": "device",
-                    "title": {
-                        "en": "Cube"
-                    }
-                },
                 {
                     "name": "side",
                     "type": "dropdown",
@@ -235,19 +214,12 @@
                 "en": "Flip cube"
             },
             "titleFormatted": {
-                "en": "Flip [[device]] from side [[fromSide]] to [[toSide]]."
+                "en": "Flip from side [[fromSide]] to [[toSide]]."
             },
             "hint": {
                 "en": "Flip cube from one side to another."
             },
             "args": [
-                {
-                    "name": "device",
-                    "type": "device",
-                    "title": {
-                        "en": "Cube"
-                    }
-                },
                 {
                     "name": "fromSide",
                     "type": "dropdown",
@@ -376,19 +348,12 @@
                 "en": "Push cube"
             },
             "titleFormatted": {
-                "en": "Push [[device]] with side [[side]] facing up."
+                "en": "Push with side [[side]] facing up."
             },
             "hint": {
                 "en": "Push cube on a surface. Only works in Action mode."
             },
             "args": [
-                {
-                    "name": "device",
-                    "type": "device",
-                    "title": {
-                        "en": "Cube"
-                    }
-                },
                 {
                     "name": "side",
                     "type": "dropdown",
@@ -458,19 +423,12 @@
                 "en": "Pick up and hold cube"
             },
             "titleFormatted": {
-                "en": "Pick up [[device]] and hold."
+                "en": "Pick up and hold."
             },
             "hint": {
                 "en": "Pick up and hold cube still. Only works in Scene mode."
             },
             "args": [
-                {
-                    "name": "device",
-                    "type": "device",
-                    "title": {
-                        "en": "Cube"
-                    }
-                }
             ],
             "tokens": []
         },
@@ -480,19 +438,12 @@
                 "en": "Throw cube"
             },
             "titleFormatted": {
-                "en": "Throw [[device]]."
+                "en": "Throw."
             },
             "hint": {
                 "en": "Hold cube an make throwing motion."
             },
             "args": [
-                {
-                    "name": "device",
-                    "type": "device",
-                    "title": {
-                        "en": "Cube"
-                    }
-                }
             ],
             "tokens": []
         },
@@ -502,19 +453,12 @@
                 "en": "Cube moved after a minute of inactivity"
             },
             "titleFormatted": {
-                "en": "[[device]] moved after a minute of inactivity."
+                "en": "Cube moved after a minute of inactivity."
             },
             "hint": {
                 "en": "Triggers when cube is moved after being inactive for more than one minute."
             },
             "args": [
-                {
-                    "name": "device",
-                    "type": "device",
-                    "title": {
-                        "en": "Cube"
-                    }
-                }
             ],
             "tokens": []
         }
