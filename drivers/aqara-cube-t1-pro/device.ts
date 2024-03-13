@@ -91,19 +91,20 @@ class CubeT1Pro extends ZigBeeDevice {
 
     this._cubeRotateTrigger = this.homey.flow.getDeviceTriggerCard("cube_rotate");
     this._cubeRotateTrigger!.registerRunListener(async (args: CubeRotateTriggerArgs, state: CubeRotateTriggerState) => {
+      // this.log("args", {degree: args.degrees, side: args.side, direction: args.direction})
+      // this.log("state", state)
+      var ret = true;
       if (args.side && !sideEquals(args.side, state.side))
-        return false;
+        ret = false;
+      else if (Math.abs(state.degrees) < args.degrees)
+        ret = false;
+      else if (args.direction === "clockwise")
+        ret = state.degrees > 0;
+      else if (args.direction === "counterclockwise")
+        ret = state.degrees < 0;
 
-      if (Math.abs(state.degrees) < args.degrees)
-        return false;
-
-      if (args.direction === "clockwise")
-        return state.degrees > 0;
-
-      if (args.direction === "counterclockwise")
-        return state.degrees < 0;
-
-      return true;
+      // this.log("triggered", ret);
+      return ret;
     });
 
     this._cubeShakeTrigger = this.homey.flow.getDeviceTriggerCard("cube_shake");
